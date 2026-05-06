@@ -71,11 +71,11 @@ public class MessageDaoImpl extends BaseJdbcDao<Message, Long> implements Messag
     @Override
     public List<Message> findConversation(Long user1Id, Long user2Id) {
         String sql = """
-                SELECT * FROM messages 
-                WHERE (sender_id = ? AND receiver_id = ?) 
-                   OR (sender_id = ? AND receiver_id = ?) 
-                ORDER BY sent_at ASC""";
-
+                    SELECT * FROM messages 
+                    WHERE (sender_id = ? AND receiver_id = ?) 
+                       OR (sender_id = ? AND receiver_id = ?) 
+                    ORDER BY sent_at ASC
+                """;
         List<Message> messages = new ArrayList<>();
         try (Connection conn = ConnectionPool.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {

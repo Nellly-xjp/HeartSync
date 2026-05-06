@@ -112,12 +112,14 @@ public abstract class BaseJdbcDao<T, ID> {
         return list;
     }
 
-    protected void executeUpdate(String sql, Object param) {
+    protected void executeUpdate(String sql, Object... params) {
         try (Connection conn = ConnectionPool.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            setParameters(ps, 1, param);
-            ps.executeUpdate();
-        } catch (SQLException e) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            setParameters(stmt, params);
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
             throw new RuntimeException("Error executing update", e);
         }
     }
@@ -141,21 +143,17 @@ public abstract class BaseJdbcDao<T, ID> {
             return;
         }
 
-        for (int i = 0; i < params.length; i++) {
-            Object value = params[i];
-            int index = i + 1;
+        int expectedParams = ps.getParameterMetaData().getParameterCount();
 
-            if (value instanceof Long) {
-                ps.setLong(index, (Long) value);
-            } else if (value instanceof String) {
-                ps.setString(index, (String) value);
-            } else if (value instanceof Integer) {
-                ps.setInt(index, (Integer) value);
-            } else if (value instanceof Double) {
-                ps.setDouble(index, (Double) value);
-            } else {
-                ps.setObject(index, value);
-            }
+        if (params.length != expectedParams) {
+            throw new RuntimeException(
+                    "❌ Wrong number of parameters: expected " + expectedParams + ", got "
+                            + params.length
+            );
+        }
+
+        for (int i = 0; i < params.length; i++) {
+            ps.setObject(i + 1, params[i]);
         }
     }
 
