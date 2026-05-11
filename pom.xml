@@ -2,22 +2,45 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>heartsync</artifactId>
 
+  <artifactId>heartsync</artifactId>
   <build>
     <plugins>
+
+      <!-- Spring Boot Maven Plugin -->
       <plugin>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <!-- Головний клас запуску -->
+          <excludes>
+            <exclude>
+              <artifactId>lombok</artifactId>
+              <groupId>org.projectlombok</groupId>
+            </exclude>
+          </excludes>
+          <mainClass>com.tyrkanych.HeartSyncApplication</mainClass>
+        </configuration>
         <groupId>org.springframework.boot</groupId>
       </plugin>
 
+      <!-- JavaFX Maven Plugin — для запуску через mvn javafx:run -->
+      <plugin>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.tyrkanych.HeartSyncApplication</mainClass>
+        </configuration>
+        <groupId>org.openjfx</groupId>
+        <version>0.0.8</version>
+      </plugin>
+
+      <!-- Surefire для тестів -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.1.2</version>
       </plugin>
 
-
+      <!-- Spotless — форматування коду -->
       <plugin>
         <artifactId>spotless-maven-plugin</artifactId>
         <configuration>
@@ -43,46 +66,111 @@
         <version>${spotless.version}</version>
       </plugin>
 
+      <!-- SonarQube -->
       <plugin>
         <artifactId>sonar-maven-plugin</artifactId>
         <groupId>org.sonarsource.scanner.maven</groupId>
         <version>${sonar.version}</version>
       </plugin>
+
     </plugins>
   </build>
-
   <dependencies>
+
+    <!-- ===== Spring Core (БЕЗ web/Tomcat/JPA) ===== -->
     <dependency>
-      <artifactId>spring-boot-starter-test</artifactId>
+      <artifactId>spring-boot-starter</artifactId>
       <groupId>org.springframework.boot</groupId>
-      <scope>test</scope>
     </dependency>
 
+    <!-- Spring JDBC — чистий JDBC без JPA/Hibernate -->
     <dependency>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <groupId>org.springframework</groupId>
+    </dependency>
+
+    <!-- Spring Context для DI/IoC -->
+    <dependency>
+      <artifactId>spring-context</artifactId>
+      <groupId>org.springframework</groupId>
+    </dependency>
+
+    <!-- ===== AOP (LoggingAspect, TransactionAspect) ===== -->
+    <dependency>
+      <artifactId>spring-aspects</artifactId>
+      <groupId>org.springframework</groupId>
     </dependency>
     <dependency>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <groupId>org.springframework.boot</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <groupId>org.aspectj</groupId>
     </dependency>
+    <dependency>
+      <artifactId>aspectjrt</artifactId>
+      <groupId>org.aspectj</groupId>
+    </dependency>
+
+    <!-- ===== JavaFX ===== -->
+    <dependency>
+      <artifactId>javafx-controls</artifactId>
+      <groupId>org.openjfx</groupId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>javafx-fxml</artifactId>
+      <groupId>org.openjfx</groupId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>javafx-base</artifactId>
+      <groupId>org.openjfx</groupId>
+      <version>${javafx.version}</version>
+    </dependency>
+
+    <!-- AtlantaFX — стилі UI -->
+    <dependency>
+      <artifactId>atlantafx-base</artifactId>
+      <groupId>io.github.mkpaz</groupId>
+      <version>2.0.1</version>
+    </dependency>
+
+    <!-- ===== MySQL драйвер (ГОЛОВНЕ що бракувало!) ===== -->
+    <dependency>
+      <artifactId>mysql-connector-j</artifactId>
+      <groupId>com.mysql</groupId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- ===== H2 — тільки для тестів ===== -->
     <dependency>
       <artifactId>h2</artifactId>
       <groupId>com.h2database</groupId>
-      <scope>runtime</scope>
+      <scope>test</scope>
     </dependency>
-    <dependency>
-      <artifactId>flyway-core</artifactId>
-      <groupId>org.flywaydb</groupId>
-    </dependency>
+
+    <!-- ===== Lombok (опціонально) ===== -->
     <dependency>
       <artifactId>lombok</artifactId>
       <groupId>org.projectlombok</groupId>
       <optional>true</optional>
     </dependency>
+
+    <!-- ===== Тести ===== -->
+    <dependency>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Spring Test Context для інтеграційних тестів -->
+    <dependency>
+      <artifactId>spring-test</artifactId>
+      <groupId>org.springframework</groupId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
   <groupId>com.tyrkanych</groupId>
   <modelVersion>4.0.0</modelVersion>
+
   <name>HeartSync</name>
 
   <parent>
@@ -94,9 +182,11 @@
 
   <properties>
     <java.version>21</java.version>
+    <javafx.version>21</javafx.version>
     <sonar.version>3.10.0.2594</sonar.version>
     <spotless.version>2.43.0</spotless.version>
   </properties>
 
   <version>1.0-SNAPSHOT</version>
+
 </project>

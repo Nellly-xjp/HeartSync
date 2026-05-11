@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class AdminDaoImpl extends BaseJdbcDao<Admin, Long> implements AdminDao {
 
     @Override

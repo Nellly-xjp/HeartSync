@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+  style="-fx-background-color: #0D0A1A;"
+  prefHeight="700"
+  prefWidth="1100"
+  stylesheets="@/styles/styles.css" fx:controller="com.tyrkanych.controller.MainController">
+
+  <center>
+    <StackPane styleClass="pane-content" fx:id="contentArea"/>
+  </center>
+
+  <left>
+    <VBox style="-fx-padding: 24 12;" spacing="4" styleClass="pane-sidebar">
+
+      <Button maxWidth="Infinity" onAction="#showDiscover"
+        styleClass="nav-item, nav-item-active"
+        text="🔥  Стрічка" fx:id="btnDiscover"/>
+
+      <Button maxWidth="Infinity" onAction="#showMatches"
+        styleClass="nav-item"
+        text="💘  Матчі" fx:id="btnMatches"/>
+      <Button maxWidth="Infinity" onAction="#showMessages"
+        styleClass="nav-item"
+        text="💬  Повідомлення" fx:id="btnMessages"/>
+      <Button maxWidth="Infinity" onAction="#showProfile"
+        styleClass="nav-item"
+        text="👤  Профіль" fx:id="btnProfile"/>
+      <Button maxWidth="Infinity" onAction="#showSettings"
+        styleClass="nav-item"
+        text="⚙️  Налаштування" fx:id="btnSettings"/>
+      <HBox style="-fx-padding: 0 0 28 8;" alignment="CENTER_LEFT"
+        spacing="6">
+        <Label style="-fx-text-fill: #FF3D8B; -fx-font-size: 24px;" text="♥"/>
+        <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #EDE8FF;"
+          text="HeartSync"/>
+      </HBox>
+
+      <Region VBox.vgrow="ALWAYS"/>
+
+      <!-- Поточний юзер -->
+      <VBox spacing="8" styleClass="card">
+        <Button style="-fx-text-fill: #FF5555; -fx-font-size: 12px;" maxWidth="Infinity"
+          onAction="#handleLogout" styleClass="btn-ghost"
+          text="Вийти"/>
+        <HBox alignment="CENTER_LEFT" spacing="12">
+          <StackPane style="-fx-min-width: 40; -fx-min-height: 40;
+                                      -fx-max-width: 40; -fx-max-height: 40;
+                                      -fx-background-color: linear-gradient(135deg,#FF6B2B,#FF3D8B);
+                                      -fx-background-radius: 50;">
+            <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="?"
+              fx:id="avatarInitial"/>
+          </StackPane>
+          <VBox spacing="2">
+            <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold; -fx-font-size: 13px;" text="..."
+              fx:id="sidebarName"/>
+            <Label styleClass="label-muted" text="..."
+              fx:id="sidebarCity"/>
+          </VBox>
+        </HBox>
+      </VBox>
+    </VBox>
+  </left>
+</BorderPane>

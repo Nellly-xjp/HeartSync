@@ -1,0 +1,36 @@
+package com.tyrkanych;
+
+import com.tyrkanych.config.AppConfig;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class HeartSyncApp extends Application {
+
+    private ApplicationContext springContext;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void init() {
+        springContext = new AnnotationConfigApplicationContext(AppConfig.class);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+        loader.setControllerFactory(springContext::getBean);
+
+        Parent root = loader.load();
+        primaryStage.setTitle("HeartSync");
+        primaryStage.setScene(new Scene(root, 460, 420));
+        primaryStage.setResizable(false);
+        primaryStage.show();
+    }
+}

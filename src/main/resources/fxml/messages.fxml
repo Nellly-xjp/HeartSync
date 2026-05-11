@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+  style="-fx-background-color: #0D0A1A;"
+  spacing="0"
+  stylesheets="@/styles/styles.css" fx:controller="com.tyrkanych.controller.MessagesController">
+
+  <!-- Список чатів -->
+  <VBox style="-fx-background-color: #13102A; -fx-border-color: #2E2850;
+                 -fx-border-width: 0 1 0 0; -fx-min-width: 300; -fx-max-width: 300;"
+    spacing="0">
+    <ListView VBox.vgrow="ALWAYS" fx:id="chatList"/>
+    <VBox style="-fx-padding: 20 16 16 16;" spacing="12">
+      <Label style="-fx-font-size: 18px;" styleClass="label-title"
+        text="💬 Повідомлення"/>
+      <TextField promptText="🔍 Пошук..." styleClass="text-field"
+        fx:id="chatSearch"/>
+    </VBox>
+  </VBox>
+
+  <!-- Область чату -->
+  <VBox HBox.hgrow="ALWAYS" spacing="0">
+    <HBox style="-fx-background-radius: 0; -fx-padding: 16 20;" alignment="CENTER_LEFT" spacing="16"
+      styleClass="card">
+      <StackPane style="-fx-min-width: 44; -fx-min-height: 44;
+                              -fx-max-width: 44; -fx-max-height: 44;
+                              -fx-background-color: linear-gradient(135deg,#7B3FE4,#FF3D8B);
+                              -fx-background-radius: 50;">
+        <Label style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px;" text="?"
+          fx:id="chatInitial"/>
+      </StackPane>
+      <VBox spacing="2">
+        <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold;" text="Оберіть чат"
+          fx:id="chatPartnerName"/>
+        <Label style="-fx-font-size: 11px;" styleClass="label-muted"
+          text="" fx:id="chatPartnerStatus"/>
+      </VBox>
+    </HBox>
+
+    <HBox alignment="CENTER" spacing="12" styleClass="chat-input-area">
+      <Button style="-fx-min-width: 44; -fx-min-height: 44;
+                           -fx-max-width: 44; -fx-max-height: 44;
+                           -fx-padding: 0; -fx-font-size: 16px;" onAction="#sendMessage" styleClass="btn-primary"
+        text="➤"/>
+      <TextField HBox.hgrow="ALWAYS" onAction="#sendMessage"
+        promptText="Напишіть повідомлення..." styleClass="text-field"
+        fx:id="messageInput"/>
+    </HBox>
+
+    <ScrollPane style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS" fitToWidth="true"
+      fx:id="chatScrollPane">
+      <VBox style="-fx-padding: 20;" fillWidth="true"
+        spacing="8" fx:id="messagesContainer"/>
+    </ScrollPane>
+  </VBox>
+</HBox>

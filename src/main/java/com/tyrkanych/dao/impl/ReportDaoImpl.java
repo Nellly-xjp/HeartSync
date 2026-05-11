@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class ReportDaoImpl extends BaseJdbcDao<Report, Long> implements ReportDao {
 
     @Override
@@ -43,7 +45,6 @@ public class ReportDaoImpl extends BaseJdbcDao<Report, Long> implements ReportDa
         report.setReportedUserId(rs.getLong("reported_user_id"));
         report.setReason(rs.getString("reason"));
         report.setStatus(rs.getString("status"));
-        report.setReviewedByAdminId(rs.getLong("reviewed_by"));
 
         Timestamp createdAt = rs.getTimestamp("created_at");
         report.setCreatedAt(createdAt != null ? createdAt.toLocalDateTime() : null);
@@ -71,6 +72,6 @@ public class ReportDaoImpl extends BaseJdbcDao<Report, Long> implements ReportDa
     @Override
     public List<Report> findPendingReports() {
         String sql = "SELECT * FROM reports WHERE status = 'pending' ORDER BY created_at ASC";
-        return findList(sql, null);
+        return findList(sql);
     }
 }

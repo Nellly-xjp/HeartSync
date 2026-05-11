@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+  styleClass="login-pane"
+  stylesheets="@/styles/styles.css"
+  fx:controller="com.tyrkanych.controller.LoginController">
+
+  <VBox alignment="CENTER" spacing="0">
+    <HBox alignment="CENTER" spacing="4">
+      <Label styleClass="login-logo" text="Heart"/>
+      <Label styleClass="login-logo-heart" text="Sync ♥"/>
+    </HBox>
+
+    <Label style="-fx-padding: 6 0 32 0;" styleClass="label-subtitle"
+      text="Знаходь своє кохання"/>
+    <Region prefHeight="60"/>
+
+    <Region prefHeight="60"/>
+    <VBox alignment="CENTER" spacing="16" styleClass="login-card">
+      <Button style="-fx-font-size: 15px;" onAction="#handleLogin"
+        prefWidth="360" styleClass="btn-primary"
+        text="Увійти →"/>
+      <HBox alignment="CENTER" spacing="12">
+        <Label styleClass="label-muted" text="або"/>
+        <Region style="-fx-background-color: #2E2850; -fx-pref-height: 1;"
+          HBox.hgrow="ALWAYS"/>
+        <Region style="-fx-background-color: #2E2850; -fx-pref-height: 1;"
+          HBox.hgrow="ALWAYS"/>
+      </HBox>
+      <HBox alignment="CENTER" spacing="6">
+        <Button style="-fx-text-fill: #FF3D8B; -fx-font-weight: bold;" onAction="#goToRegistration"
+          styleClass="btn-ghost"
+          text="Зареєструватись"/>
+        <Label styleClass="label-muted" text="Немає акаунту?"/>
+      </HBox>
+
+      <Label style="-fx-font-size: 20px;" styleClass="label-title"
+        text="З поверненням ✨"/>
+      <Label styleClass="label-subtitle" text="Увійдіть щоб продовжити"/>
+
+      <Label alignment="CENTER" prefWidth="360" text=""
+        wrapText="true" fx:id="statusLabel"/>
+      <Region prefHeight="8"/>
+
+      <Region prefHeight="4"/>
+
+      <VBox spacing="4">
+        <Label styleClass="field-label" text="EMAIL"/>
+        <TextField prefWidth="360" promptText="your@email.com"
+          styleClass="text-field" fx:id="emailField"/>
+      </VBox>
+
+      <VBox spacing="4">
+        <Label styleClass="field-label" text="ПАРОЛЬ"/>
+        <PasswordField prefWidth="360" promptText="••••••••"
+          styleClass="password-field" fx:id="passwordField"/>
+      </VBox>
+    </VBox>
+  </VBox>
+</StackPane>

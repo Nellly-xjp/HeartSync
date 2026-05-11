@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+  style="-fx-background: transparent; -fx-background-color: transparent;"
+  fitToWidth="true"
+  stylesheets="@/styles/styles.css"
+  fx:controller="com.tyrkanych.controller.ProfileController">
+
+  <VBox style="-fx-padding: 0 40 40 0;" maxWidth="700" spacing="20">
+    <HBox alignment="CENTER_LEFT" spacing="24" styleClass="card">
+      <StackPane style="-fx-min-width: 90; -fx-min-height: 90;
+                              -fx-max-width: 90; -fx-max-height: 90;
+                              -fx-background-color: linear-gradient(135deg,#FF6B2B,#FF3D8B,#7B3FE4);
+                              -fx-background-radius: 50;">
+        <Label style="-fx-text-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;" text="?"
+          fx:id="profileInitial"/>
+      </StackPane>
+      <VBox HBox.hgrow="ALWAYS" spacing="6">
+        <HBox spacing="8">
+          <Label styleClass="label-muted" text="📍 ..." fx:id="profileCity"/>
+          <Label styleClass="label-muted" text="" fx:id="profileAge"/>
+          <Label styleClass="badge" text="" fx:id="profileGender"/>
+        </HBox>
+        <Label style="-fx-font-size: 22px;" styleClass="label-title" text="..."
+          fx:id="profileName"/>
+        <Label style="-fx-font-size: 11px;" styleClass="label-muted" text=""
+          fx:id="profileEmail"/>
+      </VBox>
+    </HBox>
+
+    <HBox spacing="16">
+      <VBox HBox.hgrow="ALWAYS" alignment="CENTER" spacing="8" styleClass="card">
+        <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #FF3D8B;" text="0"
+          fx:id="statsLikes"/>
+        <Label styleClass="label-muted" text="Лайків"/>
+      </VBox>
+      <VBox HBox.hgrow="ALWAYS" alignment="CENTER" spacing="8" styleClass="card">
+        <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #FF6B2B;" text="0"
+          fx:id="statsMatches"/>
+        <Label styleClass="label-muted" text="Матчів"/>
+      </VBox>
+      <VBox HBox.hgrow="ALWAYS" alignment="CENTER" spacing="8" styleClass="card">
+        <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #9B6EF5;" text="0"
+          fx:id="statsMessages"/>
+        <Label styleClass="label-muted" text="Повідомлень"/>
+      </VBox>
+    </HBox>
+
+    <Label styleClass="label-title" text="👤 Мій профіль"/>
+
+    <!-- Статистика -->
+    <VBox spacing="16" styleClass="card">
+      <HBox spacing="16">
+        <VBox HBox.hgrow="ALWAYS" spacing="4">
+          <Label styleClass="field-label" text="ІМ'Я"/>
+          <TextField maxWidth="Infinity" styleClass="text-field" fx:id="editName"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" spacing="4">
+          <Label styleClass="field-label" text="МІСТО"/>
+          <TextField maxWidth="Infinity" styleClass="text-field" fx:id="editCity"/>
+        </VBox>
+      </HBox>
+      <HBox spacing="12">
+        <Button onAction="#saveProfile" styleClass="btn-primary"
+          text="Зберегти зміни"/>
+        <Button onAction="#resetProfile" styleClass="btn-ghost"
+          text="Скинути"/>
+      </HBox>
+      <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold; -fx-font-size: 16px;"
+        text="Редагувати профіль"/>
+      <Label text="" fx:id="saveStatus"/>
+      <VBox spacing="4">
+        <Label styleClass="field-label" text="ПРО СЕБЕ"/>
+        <TextArea maxWidth="Infinity" prefHeight="100"
+          styleClass="text-area" wrapText="true" fx:id="editBio"/>
+      </VBox>
+    </VBox>
+  </VBox>
+</ScrollPane>

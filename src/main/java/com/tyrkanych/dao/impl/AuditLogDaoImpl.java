@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class AuditLogDaoImpl extends BaseJdbcDao<AuditLog, Long> {
 
     @Override

@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class InterestDaoImpl extends BaseJdbcDao<Interest, Long> implements InterestDao {
 
     @Override
@@ -43,8 +45,6 @@ public class InterestDaoImpl extends BaseJdbcDao<Interest, Long> implements Inte
     protected void setGeneratedId(Interest interest, Long id) {
         interest.setId(id);
     }
-
-    // ====================== SPECIFIC METHODS ======================
 
     @Override
     public Optional<Interest> findByName(String name) {

@@ -9,7 +9,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ConnectionPool {
 
-    private static final String URL = "jdbc:h2:mem:heartsyncdb;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_UPPER=FALSE";
+    // ==================== ЗМІНЕНО НА ФАЙЛОВУ БД ====================
+    private static final String URL =
+            "jdbc:h2:./data/heartsyncdb;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_UPPER=FALSE";
+
     private static final String USER = "sa";
     private static final String PASSWORD = "";
     private static final int POOL_SIZE = 10;
@@ -19,7 +22,7 @@ public class ConnectionPool {
     private static volatile boolean initialized = false;
 
     private ConnectionPool() {
-    } // Singleton pattern
+    }
 
     public static void initialize() {
         if (initialized) {
@@ -37,7 +40,8 @@ public class ConnectionPool {
                 }
                 initialized = true;
                 System.out.println(
-                        " ConnectionPool initialized with " + POOL_SIZE + " connections");
+                        "✅ ConnectionPool initialized with " + POOL_SIZE + " connections");
+                System.out.println("📁 База даних: файлова (heartsyncdb)");
             } catch (SQLException e) {
                 throw new RuntimeException("Failed to initialize ConnectionPool", e);
             }
@@ -47,6 +51,7 @@ public class ConnectionPool {
     private static Connection createConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
+
 
     public static Connection getConnection() throws SQLException {
         if (!initialized) {

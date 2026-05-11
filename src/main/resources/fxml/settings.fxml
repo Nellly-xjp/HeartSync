@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+  style="-fx-background: transparent; -fx-background-color: transparent;"
+  fitToWidth="true"
+  stylesheets="@/styles/styles.css"
+  fx:controller="com.tyrkanych.controller.SettingsController">
+
+  <VBox style="-fx-padding: 0 40 40 0;" maxWidth="600" spacing="16">
+    <Label styleClass="label-title" text="⚙️ Налаштування"/>
+    <Label styleClass="label-subtitle" text="Персоналізуй свій досвід"/>
+
+    <VBox spacing="16" styleClass="card">
+      <Button onAction="#savePreferences" styleClass="btn-primary"
+        text="Зберегти уподобання"/>
+      <HBox alignment="CENTER_LEFT" spacing="16">
+        <HBox alignment="CENTER_LEFT" spacing="8">
+          <Label styleClass="label-muted" text="—"/>
+          <TextField prefWidth="70" promptText="18"
+            styleClass="text-field" fx:id="prefMinAge"/>
+          <TextField prefWidth="70" promptText="60"
+            styleClass="text-field" fx:id="prefMaxAge"/>
+        </HBox>
+        <VBox HBox.hgrow="ALWAYS" spacing="4">
+          <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold;"
+            text="Вік"/>
+          <Label styleClass="label-muted" text="Діапазон віку партнерів"/>
+        </VBox>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="16">
+        <TextField prefWidth="160" promptText="Будь-яке"
+          styleClass="text-field" fx:id="prefCity"/>
+        <VBox HBox.hgrow="ALWAYS" spacing="4">
+          <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold;"
+            text="Місто"/>
+          <Label styleClass="label-muted" text="Обмежити пошук за містом"/>
+        </VBox>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="16">
+        <ComboBox prefWidth="160" styleClass="combo-box" fx:id="prefGender"/>
+        <VBox HBox.hgrow="ALWAYS" spacing="4">
+          <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold;"
+            text="Кого шукаю"/>
+          <Label styleClass="label-muted" text="Стать потенційних партнерів"/>
+        </VBox>
+      </HBox>
+      <Label styleClass="settings-section-title" text="УПОДОБАННЯ"/>
+    </VBox>
+
+    <VBox spacing="16" styleClass="card">
+      <HBox alignment="CENTER_LEFT" spacing="16">
+        <CheckBox selected="true" fx:id="notifyMatches"/>
+        <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold;"
+          HBox.hgrow="ALWAYS"
+          text="Нові матчі"/>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="16">
+        <CheckBox selected="true" fx:id="notifyMessages"/>
+        <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold;"
+          HBox.hgrow="ALWAYS"
+          text="Нові повідомлення"/>
+      </HBox>
+      <Label styleClass="settings-section-title" text="СПОВІЩЕННЯ"/>
+    </VBox>
+
+    <VBox style="-fx-border-color: #FF555522; -fx-border-width: 1; -fx-border-radius: 16;" spacing="12"
+      styleClass="card">
+      <Button style="-fx-background-color: #FF555522; -fx-text-fill: #FF5555;
+                           -fx-border-color: #FF5555; -fx-border-radius: 10;
+                           -fx-background-radius: 10; -fx-border-width: 1;
+                           -fx-padding: 10 20; -fx-cursor: hand;" onAction="#deleteAccount"
+        text="Видалити акаунт"/>
+      <Label styleClass="label-muted"
+        text="Ці дії незворотні. Будьте обережні."/>
+      <Label style="-fx-text-fill: #FF5555;" styleClass="settings-section-title"
+        text="НЕБЕЗПЕЧНА ЗОНА"/>
+      <Label text="" fx:id="settingsStatus"/>
+    </VBox>
+  </VBox>
+</ScrollPane>

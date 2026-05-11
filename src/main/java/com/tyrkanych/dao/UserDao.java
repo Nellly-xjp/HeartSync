@@ -8,11 +8,11 @@ public interface UserDao extends BaseDao<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    boolean existsByEmail(String email);
+
     List<User> findByCity(String city);
 
     List<User> findByGender(String gender);
-
-    boolean existsByEmail(String email);
 
     void updatePassword(Long userId, String newPassword);
 }

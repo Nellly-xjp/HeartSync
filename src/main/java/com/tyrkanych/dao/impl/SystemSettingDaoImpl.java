@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class SystemSettingDaoImpl extends BaseJdbcDao<SystemSetting, Long> {
 
     @Override
@@ -41,5 +43,10 @@ public class SystemSettingDaoImpl extends BaseJdbcDao<SystemSetting, Long> {
     public Optional<SystemSetting> findByKey(String key) {
         String sql = "SELECT * FROM system_settings WHERE setting_key = ?";
         return findBy(sql, key);
+    }
+
+    @Override
+    protected void setGeneratedId(SystemSetting setting, Long id) {
+        setting.setId(id);
     }
 }

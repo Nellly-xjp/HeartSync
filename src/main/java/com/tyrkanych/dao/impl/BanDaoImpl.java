@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class BanDaoImpl extends BaseJdbcDao<Ban, Long> implements BanDao {
 
     @Override

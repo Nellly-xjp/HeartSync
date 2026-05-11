@@ -15,6 +15,7 @@ import com.tyrkanych.entity.User;
 import com.tyrkanych.entity.UserInterest;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
 
@@ -35,30 +36,49 @@ public class Main {
             UserDaoImpl userDao = new UserDaoImpl();
             System.out.println("=== Тест UserDao ===");
 
-            User user = new User("test@example.com", "password123", "Тестовий Користувач",
-                    "male", LocalDate.of(1995, 5, 15));
-            user.setCity("Київ");
-            user.setBio("Люблю програмувати і подорожувати");
+            // Використовуємо перевірку існування, щоб не падало при повторному запуску
+            String testEmail = "test@example.com";
+            Optional<User> existingUser = userDao.findByEmail(testEmail);
 
-            User savedUser = userDao.save(user);
-            System.out.println(
-                    "Збережено користувача: " + savedUser.getName() + " (ID: " + savedUser.getId()
-                            + ")");
+            User savedUser;
+            if (existingUser.isPresent()) {
+                savedUser = existingUser.get();
+                System.out.println("✅ Користувач вже існує: " + savedUser.getName() + " (ID: "
+                        + savedUser.getId() + ")");
+            } else {
+                User user = new User(testEmail, "password123", "Тестовий Користувач",
+                        "male", LocalDate.of(1995, 5, 15));
+                user.setCity("Київ");
+                user.setBio("Люблю програмувати і подорожувати");
+
+                savedUser = userDao.save(user);
+                System.out.println("Збережено нового користувача: " + savedUser.getName() + " (ID: "
+                        + savedUser.getId() + ")");
+            }
 
             userDao.findById(savedUser.getId()).ifPresent(u ->
                     System.out.println("Знайдено: " + u.getName() + " - " + u.getEmail()));
 
-            // ✅ ВИПРАВЛЕННЯ: створюємо другого користувача, щоб лайки та повідомлення мали реальний to_user_id
-            User user2 = new User("second@example.com", "pass456", "Другий Користувач",
-                    "female", LocalDate.of(1998, 3, 20));
-            user2.setCity("Львів");
-            user2.setBio("Люблю музику і мандрівки");
+            // --- Другий користувач ---
+            String secondEmail = "second@example.com";
+            Optional<User> existingUser2 = userDao.findByEmail(secondEmail);
 
-            User savedUser2 = userDao.save(user2);
-            System.out.println(
-                    "Збережено другого користувача: " + savedUser2.getName() + " (ID: "
-                            + savedUser2.getId()
-                            + ")");
+            User savedUser2;
+            if (existingUser2.isPresent()) {
+                savedUser2 = existingUser2.get();
+                System.out.println(
+                        "✅ Другий користувач вже існує (ID: " + savedUser2.getId() + ")");
+            } else {
+                User user2 = new User(secondEmail, "pass456", "Другий Користувач",
+                        "female", LocalDate.of(1998, 3, 20));
+                user2.setCity("Львів");
+                user2.setBio("Люблю музику і мандрівки");
+
+                savedUser2 = userDao.save(user2);
+                System.out.println(
+                        "Збережено другого користувача: " + savedUser2.getName() + " (ID: "
+                                + savedUser2.getId() + ")");
+            }
 
             List<User> users = userDao.findAll();
             System.out.println("Всього користувачів: " + users.size() + "\n");
@@ -67,17 +87,29 @@ public class Main {
             InterestDaoImpl interestDao = new InterestDaoImpl();
             System.out.println("=== Тест InterestDao ===");
 
-            Interest music = new Interest("Музика");
-            Interest sport = new Interest("Спорт");
-            interestDao.save(music);
-            interestDao.save(sport);
+            // Перевіряємо існування перед створенням
+            Interest music = interestDao.findByName("Музика").orElseGet(() -> {
+                Interest m = new Interest("Музика");
+                interestDao.save(m);
+                System.out.println("Створено новий інтерес: Музика");
+                return m;
+            });
 
-            interestDao.findByName("Музика").ifPresent(i ->
-                    System.out.println("Знайдено інтерес: " + i.getName()));
+            Interest sport = interestDao.findByName("Спорт").orElseGet(() -> {
+                Interest s = new Interest("Спорт");
+                interestDao.save(s);
+                System.out.println("Створено новий інтерес: Спорт");
+                return s;
+            });
+
+            System.out.println("Знайдено інтерес: " + music.getName());
 
             // --- UserInterestDao ---
             UserInterestDaoImpl userInterestDao = new UserInterestDaoImpl();
             System.out.println("\n=== Тест UserInterest ===");
+
+            // Видаляємо старі зв'язки, щоб не було дублів
+            userInterestDao.deleteByUserId(savedUser.getId());
 
             UserInterest ui1 = new UserInterest(savedUser.getId(), music.getId(), 5);
             UserInterest ui2 = new UserInterest(savedUser.getId(), sport.getId(), 4);
@@ -92,7 +124,9 @@ public class Main {
             LikeDaoImpl likeDao = new LikeDaoImpl();
             System.out.println("\n=== Тест LikeDao ===");
 
-            // ✅ ВИПРАВЛЕННЯ: використовуємо savedUser2.getId() замість хардкодного 2L
+            // Видаляємо старий лайк перед створенням нового
+            likeDao.deleteLike(savedUser.getId(), savedUser2.getId());
+
             Like like = new Like(savedUser.getId(), savedUser2.getId());
             likeDao.save(like);
             System.out.println("Лайк поставлено!");
@@ -101,7 +135,6 @@ public class Main {
             MessageDaoImpl messageDao = new MessageDaoImpl();
             System.out.println("\n=== Тест MessageDao ===");
 
-            // ✅ ВИПРАВЛЕННЯ: використовуємо savedUser2.getId() замість хардкодного 2L
             Message msg = new Message(savedUser.getId(), savedUser2.getId(), "Привіт! Як справи?");
             messageDao.save(msg);
             System.out.println("Повідомлення відправлено!");
@@ -113,7 +146,7 @@ public class Main {
             // --- System Settings ---
             SystemSettingDaoImpl settingDao = new SystemSettingDaoImpl();
             SystemSetting setting = new SystemSetting("max_likes_per_day", "50");
-            settingDao.save(setting);
+            settingDao.save(setting);   // можна залишити, бо ключ унікальний
             System.out.println("\nСистемні налаштування збережено.");
 
             System.out.println("\n🎉 Всі тести пройдено успішно!");

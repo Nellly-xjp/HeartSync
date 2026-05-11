@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+  styleClass="login-pane"
+  stylesheets="@/styles/styles.css"
+  fx:controller="com.tyrkanych.controller.RegistrationController">
+
+  <ScrollPane style="-fx-background: transparent; -fx-background-color: transparent;"
+    fitToWidth="true">
+    <VBox style="-fx-padding: 40 0;" alignment="CENTER" spacing="0">
+
+      <HBox alignment="CENTER" spacing="4">
+        <Label styleClass="login-logo" text="Heart"/>
+        <Label styleClass="login-logo-heart" text="Sync ♥"/>
+      </HBox>
+      <Label style="-fx-padding: 6 0 24 0;" styleClass="label-subtitle"
+        text="Створіть свій профіль"/>
+
+      <VBox alignment="CENTER" spacing="14" styleClass="login-card">
+        <Button style="-fx-font-size: 15px;" onAction="#handleRegister"
+          prefWidth="380" styleClass="btn-primary"
+          text="Зареєструватись ♥"/>
+
+        <HBox spacing="12">
+          <VBox HBox.hgrow="ALWAYS" spacing="4">
+            <ComboBox prefWidth="180" promptText="Оберіть..."
+              styleClass="combo-box" fx:id="genderComboBox"/>
+            <Label styleClass="field-label" text="СТАТЬ"/>
+          </VBox>
+          <VBox HBox.hgrow="ALWAYS" spacing="4">
+            <DatePicker prefWidth="180"
+              styleClass="date-picker" fx:id="birthDatePicker"/>
+            <Label styleClass="field-label" text="ДАТА НАРОДЖЕННЯ"/>
+          </VBox>
+        </HBox>
+        <HBox alignment="CENTER" spacing="6">
+          <Button style="-fx-text-fill: #FF3D8B; -fx-font-weight: bold;" onAction="#goToLogin"
+            styleClass="btn-ghost"
+            text="Увійти"/>
+          <Label styleClass="label-muted" text="Вже є акаунт?"/>
+        </HBox>
+        <Label style="-fx-font-size: 20px;" styleClass="label-title"
+          text="Реєстрація"/>
+
+        <Label alignment="CENTER" prefWidth="380" text=""
+          wrapText="true" fx:id="statusLabel"/>
+
+        <VBox spacing="4">
+          <Label styleClass="field-label" text="EMAIL"/>
+          <TextField prefWidth="380" promptText="your@email.com"
+            styleClass="text-field" fx:id="emailField"/>
+        </VBox>
+        <VBox spacing="4">
+          <Label styleClass="field-label" text="ПАРОЛЬ"/>
+          <PasswordField prefWidth="380"
+            promptText="мінімум 6 символів"
+            styleClass="password-field" fx:id="passwordField"/>
+        </VBox>
+
+        <VBox spacing="4">
+          <Label styleClass="field-label" text="ІМ'Я"/>
+          <TextField prefWidth="380" promptText="Ваше ім'я"
+            styleClass="text-field" fx:id="nameField"/>
+        </VBox>
+
+        <VBox spacing="4">
+          <Label styleClass="field-label" text="МІСТО"/>
+          <TextField prefWidth="380" promptText="Ваше місто"
+            styleClass="text-field" fx:id="cityField"/>
+        </VBox>
+
+        <VBox spacing="4">
+          <Label styleClass="field-label" text="ПРО СЕБЕ"/>
+          <TextArea prefHeight="80" prefWidth="380"
+            promptText="Розкажіть про себе..." styleClass="text-area"
+            wrapText="true" fx:id="bioArea"/>
+        </VBox>
+      </VBox>
+    </VBox>
+  </ScrollPane>
+</StackPane>

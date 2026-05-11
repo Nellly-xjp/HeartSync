@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+  style="-fx-background-color: #0D0A1A;"
+  spacing="20"
+  stylesheets="@/styles/styles.css" fx:controller="com.tyrkanych.controller.MatchesController">
+
+  <HBox VBox.vgrow="ALWAYS" spacing="20">
+    <VBox VBox.vgrow="ALWAYS" prefWidth="320" spacing="12" styleClass="card">
+      <ListView VBox.vgrow="ALWAYS" fx:id="matchesList"/>
+      <TextField maxWidth="Infinity" promptText="🔍  Пошук матчів..."
+        styleClass="text-field" fx:id="searchField"/>
+    </VBox>
+
+    <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" alignment="CENTER"
+      spacing="20" styleClass="card" fx:id="matchDetailPane">
+
+      <HBox alignment="CENTER" spacing="8">
+        <Label styleClass="label-muted" text="Сумісність:"/>
+        <Label styleClass="compatibility-label" text="—" fx:id="detailScore"/>
+      </HBox>
+
+      <HBox alignment="CENTER" spacing="12">
+        <Button onAction="#openChat" styleClass="btn-primary"
+          text="💬 Написати"/>
+        <Button onAction="#viewProfile" styleClass="btn-secondary"
+          text="👤 Профіль"/>
+      </HBox>
+      <Label style="-fx-font-size: 22px;" styleClass="label-title" text="Оберіть матч"
+        fx:id="detailName"/>
+
+      <Label alignment="CENTER" maxWidth="300" styleClass="label-muted"
+        text="" wrapText="true" fx:id="detailBio"/>
+
+      <Label styleClass="label-muted" text="" fx:id="detailCity"/>
+      <ProgressBar prefWidth="200" progress="0"
+        styleClass="progress-bar" fx:id="compatibilityBar"/>
+
+      <StackPane style="-fx-min-width: 100; -fx-min-height: 100;
+                              -fx-max-width: 100; -fx-max-height: 100;
+                              -fx-background-color: linear-gradient(135deg,#FF6B2B,#FF3D8B);
+                              -fx-background-radius: 50;">
+        <Label style="-fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;" text="?"
+          fx:id="detailInitial"/>
+      </StackPane>
+    </VBox>
+  </HBox>
+  <Label styleClass="label-subtitle"
+    text="Люди, з якими ви сподобались одне одному"/>
+
+  <Label styleClass="label-title" text="💘 Ваші матчі"/>
+</VBox>

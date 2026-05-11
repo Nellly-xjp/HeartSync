@@ -3,17 +3,18 @@ package com.tyrkanych.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.tyrkanych.dao.impl.UserDaoImpl;
 import com.tyrkanych.entity.User;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserDaoIntegrationTest extends BaseIntegrationTest {
 
-    private final UserDaoImpl userDao = new UserDaoImpl();
+    @Autowired  // Spring інжектить — не new UserDaoImpl()
+    private UserDaoImpl userDao;
 
     @Test
     void testSaveAndFind() {
@@ -24,6 +25,7 @@ public class UserDaoIntegrationTest extends BaseIntegrationTest {
 
         User found = userDao.findById(user.getId()).orElse(null);
         assertNotNull(found);
+        assertEquals("test@mail.com", found.getEmail());
     }
 
     @Test
@@ -32,7 +34,7 @@ public class UserDaoIntegrationTest extends BaseIntegrationTest {
         userDao.save(new User("b@mail.com", "1", "B", "female", LocalDate.now()));
 
         List<User> users = userDao.findAll();
-        assertTrue(users.size() >= 2);
+        assertEquals(2, users.size()); // точно 2, бо @BeforeEach очищує
     }
 
     @Test
@@ -45,10 +47,8 @@ public class UserDaoIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testCount() {
-        int before = userDao.count();
+        assertEquals(0, userDao.count()); // після очищення = 0
         userDao.save(new User("count@mail.com", "1", "Count", "male", LocalDate.now()));
-        int after = userDao.count();
-
-        assertEquals(before + 1, after);
+        assertEquals(1, userDao.count());
     }
 }

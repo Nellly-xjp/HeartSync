@@ -1,27 +1,46 @@
 package com.tyrkanych.integration;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.tyrkanych.dao.impl.MatchDaoImpl;
-import com.tyrkanych.dao.impl.UserDaoImpl;
+import com.tyrkanych.dao.MatchDao;
 import com.tyrkanych.entity.Match;
 import com.tyrkanych.entity.User;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MatchDaoIntegrationTest extends BaseIntegrationTest {
 
-    private final MatchDaoImpl dao = new MatchDaoImpl();
-    private final UserDaoImpl userDao = new UserDaoImpl();
+    @Autowired
+    private MatchDao matchDao;          // ← Spring інжектить
+
+    @Autowired
+    private com.tyrkanych.dao.UserDao userDao;   // ← теж через інтерфейс
 
     @Test
-    void testMatch() {
-        User u1 = userDao.save(new User("m1@mail.com", "1", "A", "male", LocalDate.now()));
-        User u2 = userDao.save(new User("m2@mail.com", "1", "B", "female", LocalDate.now()));
+    void testCreateMatch() {
+        User u1 = userDao.save(
+                new User("m1@mail.com", "1", "A", "male", LocalDate.now()));
+        User u2 = userDao.save(
+                new User("m2@mail.com", "1", "B", "female", LocalDate.now()));
 
         Match match = new Match(u1.getId(), u2.getId(), 0.9);
-        dao.save(match);
+        matchDao.save(match);
 
         assertNotNull(match.getId());
+    }
+
+    @Test
+    void testFindByUsers() {
+        User u1 = userDao.save(
+                new User("m3@mail.com", "1", "C", "male", LocalDate.now()));
+        User u2 = userDao.save(
+                new User("m4@mail.com", "1", "D", "female", LocalDate.now()));
+
+        Match match = new Match(u1.getId(), u2.getId(), 0.75);
+        matchDao.save(match);
+
+        assertTrue(matchDao.findByUsers(u1.getId(), u2.getId()).isPresent());
     }
 }

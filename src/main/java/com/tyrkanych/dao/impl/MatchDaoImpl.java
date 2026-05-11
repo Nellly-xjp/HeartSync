@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class MatchDaoImpl extends BaseJdbcDao<Match, Long> implements MatchDao {
 
     @Override
@@ -23,9 +25,7 @@ public class MatchDaoImpl extends BaseJdbcDao<Match, Long> implements MatchDao {
 
     @Override
     protected String getInsertSql() {
-        return """
-                INSERT INTO matches (user1_id, user2_id, compatibility_score) 
-                VALUES (?, ?, ?)""";
+        return "INSERT INTO matches (user1_id, user2_id, compatibility_score) VALUES (?, ?, ?)";
     }
 
     @Override
@@ -43,10 +43,8 @@ public class MatchDaoImpl extends BaseJdbcDao<Match, Long> implements MatchDao {
         match.setUser1Id(rs.getLong("user1_id"));
         match.setUser2Id(rs.getLong("user2_id"));
         match.setCompatibilityScore(rs.getDouble("compatibility_score"));
-
-        Timestamp createdAt = rs.getTimestamp("created_at");
-        match.setCreatedAt(createdAt != null ? createdAt.toLocalDateTime() : null);
-
+        Timestamp ts = rs.getTimestamp("created_at");
+        match.setCreatedAt(ts != null ? ts.toLocalDateTime() : null);
         return match;
     }
 
@@ -59,20 +57,14 @@ public class MatchDaoImpl extends BaseJdbcDao<Match, Long> implements MatchDao {
     public Optional<Match> findByUsers(Long user1Id, Long user2Id) {
         String sql = """
                 SELECT * FROM matches 
-                WHERE (user1_id = ? AND user2_id = ?) 
-                   OR (user1_id = ? AND user2_id = ?)
+                WHERE (user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)
                 """;
-
         return findBy(sql, user1Id, user2Id, user2Id, user1Id);
     }
 
     @Override
     public List<Match> findByUserId(Long userId) {
-        String sql = """
-                SELECT * FROM matches 
-                WHERE user1_id = ? OR user2_id = ?
-                """;
-
+        String sql = "SELECT * FROM matches WHERE user1_id = ? OR user2_id = ?";
         return findList(sql, userId, userId);
     }
 }

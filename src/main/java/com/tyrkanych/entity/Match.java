@@ -1,6 +1,7 @@
 package com.tyrkanych.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Match {
 
@@ -9,6 +10,8 @@ public class Match {
     private Long user2Id;
     private Double compatibilityScore;
     private LocalDateTime createdAt;
+
+    // ==================== КОНСТРУКТОРИ ====================
 
     public Match() {
     }
@@ -19,10 +22,15 @@ public class Match {
         this.compatibilityScore = compatibilityScore;
     }
 
-    // Getters and Setters
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public Long getId() {
         return id;
     }
+
+    // ==================== GETTERS & SETTERS ====================
 
     public void setId(Long id) {
         this.id = id;
@@ -58,5 +66,73 @@ public class Match {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Match match = (Match) o;
+        return Objects.equals(id, match.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Match{id=" + id + ", user1Id=" + user1Id
+                + ", user2Id=" + user2Id
+                + ", score=" + compatibilityScore + "}";
+    }
+
+    public static class Builder {
+
+        private Long id;
+        private Long user1Id;
+        private Long user2Id;
+        private Double compatibilityScore;
+        private LocalDateTime createdAt;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder user1Id(Long user1Id) {
+            this.user1Id = user1Id;
+            return this;
+        }
+
+        public Builder user2Id(Long user2Id) {
+            this.user2Id = user2Id;
+            return this;
+        }
+
+        public Builder compatibilityScore(Double compatibilityScore) {
+            this.compatibilityScore = compatibilityScore;
+            return this;
+        }
+
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Match build() {
+            Match m = new Match();
+            m.id = this.id;
+            m.user1Id = this.user1Id;
+            m.user2Id = this.user2Id;
+            m.compatibilityScore = this.compatibilityScore;
+            m.createdAt = this.createdAt;
+            return m;
+        }
     }
 }

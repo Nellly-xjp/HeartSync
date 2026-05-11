@@ -1,6 +1,6 @@
+// ===== UserInterestDaoImpl.java =====
 package com.tyrkanych.dao.impl;
 
-import com.tyrkanych.config.ConnectionPool;
 import com.tyrkanych.dao.UserInterestDao;
 import com.tyrkanych.entity.UserInterest;
 import java.sql.Connection;
@@ -9,24 +9,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserInterestDaoImpl implements UserInterestDao {
 
-    private static final String INSERT_SQL = """
-            INSERT INTO user_interests (user_id, interest_id, level) 
-            VALUES (?, ?, ?)""";
-
-    private static final String FIND_BY_USER_SQL = "SELECT * FROM user_interests WHERE user_id = ?";
-    private static final String FIND_BY_INTEREST_SQL = "SELECT * FROM user_interests WHERE interest_id = ?";
-    private static final String DELETE_BY_USER_SQL = "DELETE FROM user_interests WHERE user_id = ?";
-    private static final String DELETE_SQL = "DELETE FROM user_interests WHERE user_id = ? AND interest_id = ?";
-    private static final String EXISTS_SQL = "SELECT 1 FROM user_interests WHERE user_id = ? AND interest_id = ?";
+    private static final String INSERT_SQL =
+            "INSERT INTO user_interests (user_id, interest_id, level) VALUES (?, ?, ?)";
+    private static final String FIND_BY_USER_SQL =
+            "SELECT * FROM user_interests WHERE user_id = ?";
+    private static final String FIND_BY_INTEREST_SQL =
+            "SELECT * FROM user_interests WHERE interest_id = ?";
+    private static final String DELETE_BY_USER_SQL =
+            "DELETE FROM user_interests WHERE user_id = ?";
+    private static final String DELETE_SQL =
+            "DELETE FROM user_interests WHERE user_id = ? AND interest_id = ?";
+    private static final String EXISTS_SQL =
+            "SELECT 1 FROM user_interests WHERE user_id = ? AND interest_id = ?";
+    @Autowired // Spring DI замість ConnectionPool
+    private DataSource dataSource;
 
     @Override
     public void save(UserInterest ui) {
-        try (Connection conn = ConnectionPool.getConnection();
+        try (Connection conn = dataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
-
             ps.setLong(1, ui.getUserId());
             ps.setLong(2, ui.getInterestId());
             ps.setInt(3, ui.getLevel());
@@ -41,10 +49,8 @@ public class UserInterestDaoImpl implements UserInterestDao {
         if (userInterests.isEmpty()) {
             return;
         }
-
-        try (Connection conn = ConnectionPool.getConnection();
+        try (Connection conn = dataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
-
             for (UserInterest ui : userInterests) {
                 ps.setLong(1, ui.getUserId());
                 ps.setLong(2, ui.getInterestId());
@@ -74,9 +80,8 @@ public class UserInterestDaoImpl implements UserInterestDao {
 
     @Override
     public void delete(Long userId, Long interestId) {
-        try (Connection conn = ConnectionPool.getConnection();
+        try (Connection conn = dataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
-
             ps.setLong(1, userId);
             ps.setLong(2, interestId);
             ps.executeUpdate();
@@ -87,9 +92,8 @@ public class UserInterestDaoImpl implements UserInterestDao {
 
     @Override
     public boolean exists(Long userId, Long interestId) {
-        try (Connection conn = ConnectionPool.getConnection();
+        try (Connection conn = dataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(EXISTS_SQL)) {
-
             ps.setLong(1, userId);
             ps.setLong(2, interestId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -102,9 +106,8 @@ public class UserInterestDaoImpl implements UserInterestDao {
 
     private List<UserInterest> findList(String sql, Long param) {
         List<UserInterest> list = new ArrayList<>();
-        try (Connection conn = ConnectionPool.getConnection();
+        try (Connection conn = dataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setLong(1, param);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -126,7 +129,7 @@ public class UserInterestDaoImpl implements UserInterestDao {
     }
 
     private void executeUpdate(String sql, Long param) {
-        try (Connection conn = ConnectionPool.getConnection();
+        try (Connection conn = dataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, param);
             ps.executeUpdate();

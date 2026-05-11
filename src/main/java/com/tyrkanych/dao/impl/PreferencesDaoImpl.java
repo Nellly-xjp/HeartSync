@@ -1,14 +1,14 @@
 package com.tyrkanych.dao.impl;
 
-import com.tyrkanych.config.ConnectionPool;
 import com.tyrkanych.dao.PreferencesDao;
 import com.tyrkanych.entity.Preferences;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class PreferencesDaoImpl extends BaseJdbcDao<Preferences, Long> implements PreferencesDao {
 
     @Override
@@ -24,7 +24,7 @@ public class PreferencesDaoImpl extends BaseJdbcDao<Preferences, Long> implement
     @Override
     protected String getInsertSql() {
         return """
-                INSERT INTO preferences (user_id, preferred_gender, min_age, max_age, city) 
+                INSERT INTO preferences (user_id, preferred_gender, min_age, max_age, city)
                 VALUES (?, ?, ?, ?, ?)""";
     }
 
@@ -63,22 +63,14 @@ public class PreferencesDaoImpl extends BaseJdbcDao<Preferences, Long> implement
     @Override
     public void updateByUserId(Preferences preferences) {
         String sql = """
-                UPDATE preferences 
-                SET preferred_gender = ?, min_age = ?, max_age = ?, city = ? 
+                UPDATE preferences
+                SET preferred_gender = ?, min_age = ?, max_age = ?, city = ?
                 WHERE user_id = ?""";
-
-        try (Connection conn = ConnectionPool.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, preferences.getPreferredGender());
-            ps.setInt(2, preferences.getMinAge());
-            ps.setInt(3, preferences.getMaxAge());
-            ps.setString(4, preferences.getCity());
-            ps.setLong(5, preferences.getUserId());
-
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error updating preferences", e);
-        }
+        executeUpdate(sql,
+                preferences.getPreferredGender(),
+                preferences.getMinAge(),
+                preferences.getMaxAge(),
+                preferences.getCity(),
+                preferences.getUserId());
     }
 }

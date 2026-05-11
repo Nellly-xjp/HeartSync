@@ -1,18 +1,19 @@
 package com.tyrkanych.repository;
 
 import com.tyrkanych.dao.BaseDao;
-import java.lang.reflect.ParameterizedType;
 
+/**
+ * Базовий репозиторій — делегує виклики до відповідного DAO.
+ * <p>
+ * Виправлення: прибрано рефлексію getActualTypeArguments(), яка падала при використанні
+ * конструктора з параметром замість прямого наслідування з типом.
+ */
 public class GenericRepository<T, ID> {
 
     protected final BaseDao<T, ID> dao;
-    private final Class<T> entityClass;
 
-    @SuppressWarnings("unchecked")
     public GenericRepository(BaseDao<T, ID> dao) {
         this.dao = dao;
-        this.entityClass = (Class<T>) ((ParameterizedType)
-                getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     public T save(T entity) {
@@ -25,9 +26,5 @@ public class GenericRepository<T, ID> {
 
     public void delete(ID id) {
         dao.deleteById(id);
-    }
-
-    public Class<T> getEntityClass() {
-        return entityClass;
     }
 }

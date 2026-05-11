@@ -2,6 +2,7 @@ package com.tyrkanych.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Objects;
 
 public class User {
@@ -10,7 +11,7 @@ public class User {
     private String email;
     private String password;
     private String name;
-    private String gender; // male, female, other
+    private String gender;
     private LocalDate birthDate;
     private String city;
     private String bio;
@@ -27,7 +28,11 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    // Getters and Setters
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    // ==================== GETTERS ====================
     public Long getId() {
         return id;
     }
@@ -100,6 +105,16 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Додаємо метод getAge()
+     */
+    public Integer getAge() {
+        if (birthDate == null) {
+            return null;
+        }
+        return Period.between(birthDate, LocalDate.now()).getYears();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -117,8 +132,75 @@ public class User {
         return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "User{id=" + id + ", name='" + name + "', email='" + email + "'}";
+    public static class Builder {
+
+        private Long id;
+        private String email;
+        private String password;
+        private String name;
+        private String gender;
+        private LocalDate birthDate;
+        private String city;
+        private String bio;
+        private LocalDateTime createdAt;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder gender(String gender) {
+            this.gender = gender;
+            return this;
+        }
+
+        public Builder birthDate(LocalDate birthDate) {
+            this.birthDate = birthDate;
+            return this;
+        }
+
+        public Builder city(String city) {
+            this.city = city;
+            return this;
+        }
+
+        public Builder bio(String bio) {
+            this.bio = bio;
+            return this;
+        }
+
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public User build() {
+            User user = new User();
+            user.id = this.id;
+            user.email = this.email;
+            user.password = this.password;
+            user.name = this.name;
+            user.gender = this.gender;
+            user.birthDate = this.birthDate;
+            user.city = this.city;
+            user.bio = this.bio;
+            user.createdAt = this.createdAt;
+            return user;
+        }
     }
 }

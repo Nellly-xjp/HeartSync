@@ -1,3 +1,4 @@
+// ===== InterestDaoIntegrationTest.java =====
 package com.tyrkanych.integration;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -7,20 +8,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.tyrkanych.dao.impl.InterestDaoImpl;
 import com.tyrkanych.entity.Interest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class InterestDaoIntegrationTest extends BaseIntegrationTest {
 
-    private final InterestDaoImpl dao = new InterestDaoImpl();
+    @Autowired
+    private InterestDaoImpl interestDao;
 
     @Test
     void testSaveFindDelete() {
         Interest interest = new Interest("Music");
-        dao.save(interest);
+        interestDao.save(interest);
 
         assertNotNull(interest.getId());
-        assertTrue(dao.findByName("Music").isPresent());
+        assertTrue(interestDao.findByName("Music").isPresent());
 
-        dao.deleteById(interest.getId());
-        assertFalse(dao.existsById(interest.getId()));
+        interestDao.deleteById(interest.getId());
+        assertFalse(interestDao.existsById(interest.getId()));
     }
 }

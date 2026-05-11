@@ -2,19 +2,16 @@ package com.tyrkanych.dao.impl;
 
 import com.tyrkanych.dao.UserDao;
 import com.tyrkanych.entity.User;
-import com.tyrkanych.identity.IdentityMap;
-import com.tyrkanych.uow.UnitOfWork;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
-
-    private final IdentityMap<Long, User> cache = new IdentityMap<>();
 
     @Override
     protected String getTableName() {
@@ -30,7 +27,8 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
     protected String getInsertSql() {
         return """
                 INSERT INTO users (email, password, name, gender, birth_date, city, bio)
-                VALUES (?, ?, ?, ?, ?, ?, ?)""";
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
     }
 
     @Override
@@ -56,40 +54,25 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
                 rs.getDate("birth_date") != null ? rs.getDate("birth_date").toLocalDate() : null);
         user.setCity(rs.getString("city"));
         user.setBio(rs.getString("bio"));
-        user.setCreatedAt(rs.getTimestamp("created_at") != null
-                ? rs.getTimestamp("created_at").toLocalDateTime()
-                : null);
-
         return user;
     }
 
     @Override
     protected void setGeneratedId(User user, Long id) {
         user.setId(id);
-        cache.put(id, user); // кешуємо після вставки
     }
 
-    // ====================== CACHE ======================
-
-    @Override
-    public Optional<User> findById(Long id) {
-
-        if (cache.contains(id)) {
-            return Optional.of(cache.get(id));
-        }
-
-        Optional<User> userOpt = super.findById(id);
-        userOpt.ifPresent(user -> cache.put(id, user));
-
-        return userOpt;
-    }
-
-    // ====================== SPECIFIC METHODS ======================
-
+    // ==================== SPECIFIC METHODS ====================
     @Override
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         return findBy(sql, email);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        String sql = "SELECT 1 FROM users WHERE email = ?";
+        return exists(sql, email);
     }
 
     @Override
@@ -105,34 +88,8 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
     }
 
     @Override
-    public boolean existsByEmail(String email) {
-        String sql = "SELECT 1 FROM users WHERE email = ?";
-        return exists(sql, email);
-    }
-
-    // ====================== UNIT OF WORK ======================
-
-    @Override
     public void updatePassword(Long userId, String newPassword) {
-
-        UnitOfWork uow = new UnitOfWork();
-        uow.begin();
-
-        try {
-            Connection conn = uow.getConnection();
-
-            String sql = "UPDATE users SET password = ? WHERE id = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setString(1, newPassword);
-            ps.setLong(2, userId);
-            ps.executeUpdate();
-
-            uow.commit();
-
-        } catch (Exception e) {
-            uow.rollback();
-            throw new RuntimeException("Error updating password", e);
-        }
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+        executeUpdate(sql, newPassword, userId);
     }
 }
