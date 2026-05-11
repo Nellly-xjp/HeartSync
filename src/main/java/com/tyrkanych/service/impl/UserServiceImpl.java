@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final ValidationService validationService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, ValidationService validationService) {
+    public UserServiceImpl(UserDao userDao,
+            ValidationService validationService,
+            PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.validationService = validationService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -36,9 +41,12 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Користувач з таким email вже існує!");
         }
 
+        // Хешуємо пароль перед збереженням
+        String hashedPassword = passwordEncoder.encode(dto.getPassword());
+
         User user = User.builder()
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(hashedPassword)
                 .name(dto.getName())
                 .gender(dto.getGender())
                 .birthDate(dto.getBirthDate())
@@ -58,6 +66,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserDto> findByEmail(String email) {
         return userDao.findByEmail(email).map(this::convertToDto);
+    }
+
+    @Override
+    public Optional<UserDto> findByEmailAndPassword(String email, String password) {
+        return userDao.findByEmail(email)
+                .filter(user -> passwordEncoder.matches(password, user.getPassword()))
+                .map(this::convertToDto);
     }
 
     @Override
@@ -81,11 +96,9 @@ public class UserServiceImpl implements UserService {
         dto.setBirthDate(user.getBirthDate());
         dto.setCity(user.getCity());
         dto.setBio(user.getBio());
-
         if (user.getBirthDate() != null) {
             dto.setAge(Period.between(user.getBirthDate(), LocalDate.now()).getYears());
         }
-
         return dto;
     }
 }

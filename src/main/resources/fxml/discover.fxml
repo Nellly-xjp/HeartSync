@@ -1,104 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-  style="-fx-background-color: #0D0A1A;"
-  spacing="24"
-  stylesheets="@/styles/styles.css" fx:controller="com.tyrkanych.controller.DiscoverController">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-  <HBox alignment="CENTER_LEFT">
-    <VBox spacing="4">
-      <Label styleClass="label-title" text="🔥 Стрічка знайомств"/>
-      <Label styleClass="label-subtitle"
-        text="Хто сьогодні зустрінеться на твоєму шляху?"/>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="24" styleClass="pane-root"
+  stylesheets="@../styles/styles.css"
+  xmlns="http://javafx.com/javafx/21"
+  fx:controller="com.tyrkanych.controller.DiscoverController">
+  <HBox alignment="CENTER_LEFT" spacing="12">
+    <Button onAction="#applyFilters" styleClass="btn-secondary" text="Застосувати"/>
+    <ComboBox prefWidth="110" promptText="Стать" fx:id="genderFilter"/>
+    <TextField prefWidth="60" promptText="від" fx:id="minAge"/>
+    <TextField prefWidth="60" promptText="до" fx:id="maxAge"/>
+    <TextField prefWidth="120" promptText="Місто" fx:id="cityFilter"/>
+    <VBox HBox.hgrow="ALWAYS" spacing="2">
+      <Label styleClass="label-title" text="Пошук"/>
+      <Label styleClass="label-muted" text="Знайди свою людину"/>
     </VBox>
   </HBox>
-
-  <HBox VBox.vgrow="ALWAYS" alignment="TOP_CENTER" spacing="32">
-
-    <!-- Картка профілю -->
-    <VBox alignment="CENTER" spacing="0" styleClass="match-card">
-      <StackPane style="-fx-background-color: linear-gradient(135deg,#241F45,#1C1836);
-                              -fx-background-radius: 24 24 0 0;
-                              -fx-min-height: 280; -fx-max-height: 280;"
-        VBox.vgrow="ALWAYS">
-        <Label style="-fx-font-size: 80px; -fx-opacity: 0.3;" text="👤"
+  <HBox VBox.vgrow="ALWAYS" alignment="CENTER">
+    <VBox alignment="TOP_CENTER" spacing="0" styleClass="match-card">
+      <HBox style="-fx-padding: 6 0 0 0;" alignment="CENTER" spacing="8">
+        <Label styleClass="label-muted" fx:id="cardAge"/>
+        <Label styleClass="label-muted" text="·"/>
+        <Label styleClass="match-card-city" fx:id="cardCity"/>
+      </HBox>
+      <HBox style="-fx-padding: 0 0 24 0;" alignment="CENTER" spacing="8">
+        <Label styleClass="badge" fx:id="interest1"/>
+        <Label styleClass="badge" fx:id="interest2"/>
+        <Label styleClass="badge" fx:id="interest3"/>
+      </HBox>
+      <HBox style="-fx-padding: 0 24 32 24;" alignment="CENTER" spacing="16">
+        <Button style="-fx-font-size: 20px; -fx-background-radius: 50;" onAction="#handlePass" prefHeight="56" prefWidth="56"
+          styleClass="btn-danger" text="✕"/>
+        <Button style="-fx-font-size: 16px; -fx-background-radius: 50; -fx-background-color: #F5A623; -fx-text-fill: white; -fx-cursor: hand;" onAction="#handleSuperLike" prefHeight="48"
+          prefWidth="48"
+          text="★"/>
+        <Button style="-fx-font-size: 20px; -fx-background-radius: 50;" onAction="#handleLike" prefHeight="56" prefWidth="56"
+          styleClass="btn-primary" text="♥"/>
+      </HBox>
+      <Label style="-fx-padding: 16 24 16 24; -fx-alignment: center;" styleClass="label-muted" wrapText="true"
+        fx:id="cardBio"/>
+      <Label style="-fx-alignment: center;" styleClass="match-card-name" wrapText="true"
+        fx:id="cardName"/>
+      <Label style="-fx-padding: 4 14;" styleClass="badge" fx:id="compatibilityBadge">
+        <VBox.margin>
+          <Insets bottom="16"/>
+        </VBox.margin>
+      </Label>
+      <Region VBox.vgrow="ALWAYS"/>
+      <StackPane
+        style="-fx-background-color: linear-gradient(135deg,#C4B4E8,#9B7DD4); -fx-background-radius: 50; -fx-min-width: 90; -fx-min-height: 90; -fx-max-width: 90; -fx-max-height: 90;"
+        alignment="CENTER">
+        <Label style="-fx-font-size: 36px; -fx-text-fill: white; -fx-font-weight: bold;" text="?"
           fx:id="profileEmoji"/>
-        <VBox style="-fx-padding: 16;" alignment="TOP_RIGHT">
-          <HBox style="-fx-background-color: #FF6B2B;
-                                 -fx-background-radius: 20; -fx-padding: 6 12;">
-            <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="0%"
-              fx:id="compatibilityBadge"/>
-          </HBox>
-        </VBox>
+        <VBox.margin>
+          <Insets bottom="16" top="32"/>
+        </VBox.margin>
       </StackPane>
-
-      <VBox style="-fx-background-color: linear-gradient(180deg,transparent,#0D0A1Aee);
-                         -fx-background-radius: 0 0 24 24; -fx-padding: 20;"
-        maxWidth="Infinity" spacing="8">
-        <HBox alignment="CENTER_LEFT" spacing="10">
-          <Label styleClass="match-card-name" text="Завантаження..."
-            fx:id="cardName"/>
-          <Label style="-fx-background-color: #7B3FE422; -fx-text-fill: #9B6EF5;
-                                  -fx-background-radius: 8; -fx-padding: 3 8;" text=""
-            fx:id="cardAge"/>
-        </HBox>
-        <HBox style="-fx-padding: 4 0 0 0;" spacing="6">
-          <Label styleClass="badge" text="" fx:id="interest1"/>
-          <Label styleClass="badge" text="" fx:id="interest2"/>
-          <Label styleClass="badge" text="" fx:id="interest3"/>
-        </HBox>
-        <Label maxWidth="290" styleClass="label-muted" text=""
-          wrapText="true" fx:id="cardBio"/>
-        <Label styleClass="match-card-city" text="" fx:id="cardCity"/>
-      </VBox>
-    </VBox>
-
-    <!-- Бокова панель: кнопки + фільтри -->
-    <VBox style="-fx-min-width: 260;" alignment="TOP_CENTER" spacing="20">
-
-      <Label alignment="CENTER" styleClass="label-muted" text=""
-        wrapText="true" fx:id="statusLabel"/>
-
-      <VBox spacing="14" styleClass="card">
-        <Button maxWidth="Infinity" onAction="#applyFilters"
-          styleClass="btn-violet" text="Застосувати"/>
-        <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold; -fx-font-size: 14px;"
-          text="Фільтри"/>
-        <VBox spacing="4">
-          <Label styleClass="field-label" text="МІСТО"/>
-          <TextField maxWidth="Infinity" promptText="Будь-яке"
-            styleClass="text-field" fx:id="cityFilter"/>
-        </VBox>
-        <VBox spacing="4">
-          <HBox alignment="CENTER_LEFT" spacing="8">
-            <Label styleClass="label-muted" text="—"/>
-            <TextField prefWidth="80" promptText="18"
-              styleClass="text-field" fx:id="minAge"/>
-            <TextField prefWidth="80" promptText="99"
-              styleClass="text-field" fx:id="maxAge"/>
-          </HBox>
-          <Label styleClass="field-label" text="ВІК"/>
-        </VBox>
-        <VBox spacing="4">
-          <ComboBox maxWidth="Infinity" promptText="Всі"
-            styleClass="combo-box" fx:id="genderFilter"/>
-          <Label styleClass="field-label" text="СТАТЬ"/>
-        </VBox>
-      </VBox>
-
-      <VBox spacing="16" styleClass="card">
-        <Button style="-fx-font-size: 16px; -fx-padding: 14 0;" maxWidth="Infinity"
-          onAction="#handleLike" styleClass="btn-primary"
-          text="♥  Лайк"/>
-        <Button maxWidth="Infinity" onAction="#handlePass"
-          styleClass="btn-secondary" text="✕  Пропустити"/>
-        <Button maxWidth="Infinity" onAction="#handleSuperLike"
-          styleClass="btn-violet" text="⭐  Супер-лайк"/>
-        <Label style="-fx-text-fill: #EDE8FF; -fx-font-weight: bold; -fx-font-size: 14px;"
-          text="Твій вибір"/>
-      </VBox>
     </VBox>
   </HBox>
+  <Label style="-fx-alignment: center;" styleClass="status-info" fx:id="statusLabel"/>
 </VBox>

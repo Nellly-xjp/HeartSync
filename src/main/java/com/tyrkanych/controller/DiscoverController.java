@@ -5,6 +5,8 @@ import com.tyrkanych.entity.User;
 import com.tyrkanych.service.LikeService;
 import com.tyrkanych.session.SessionManager;
 import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -18,6 +20,7 @@ public class DiscoverController {
     private final UserDaoImpl userDao;
     private final LikeService likeService;
     private final SessionManager sessionManager;
+    private final ObservableList<User> candidates = FXCollections.observableArrayList();
     @FXML
     private Label profileEmoji;
     @FXML
@@ -46,7 +49,6 @@ public class DiscoverController {
     private TextField minAge;
     @FXML
     private TextField maxAge;
-    private List<User> candidates;
     private int currentIndex = 0;
 
     @Autowired
@@ -67,9 +69,10 @@ public class DiscoverController {
 
     private void loadCandidates() {
         Long myId = sessionManager.getCurrentUserId();
-        candidates = userDao.findAll().stream()
+        List<User> all = userDao.findAll().stream()
                 .filter(u -> !u.getId().equals(myId))
                 .toList();
+        candidates.setAll(all);
         currentIndex = 0;
         showCurrentCard();
     }
@@ -138,16 +141,15 @@ public class DiscoverController {
         int min = parseIntOrDefault(minAge.getText(), 18);
         int max = parseIntOrDefault(maxAge.getText(), 99);
 
-        candidates = userDao.findAll().stream()
+        List<User> filtered = userDao.findAll().stream()
                 .filter(u -> !u.getId().equals(myId))
-                .filter(u -> gender == null || gender.equals("Всі")
-                        || gender.equals(u.getGender()))
-                .filter(u -> city.isEmpty()
-                        || (u.getCity() != null
-                        && u.getCity().toLowerCase().contains(city)))
-                .filter(u -> u.getAge() == null
-                        || (u.getAge() >= min && u.getAge() <= max))
+                .filter(u -> gender == null || gender.equals("Всі") || gender.equals(u.getGender()))
+                .filter(u -> city.isEmpty() || (u.getCity() != null && u.getCity().toLowerCase()
+                        .contains(city)))
+                .filter(u -> u.getAge() == null || (u.getAge() >= min && u.getAge() <= max))
                 .toList();
+
+        candidates.setAll(filtered);
         currentIndex = 0;
         showCurrentCard();
     }

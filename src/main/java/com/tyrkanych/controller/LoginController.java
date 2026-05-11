@@ -44,25 +44,30 @@ public class LoginController {
             return;
         }
 
+        if (!email.matches("^[\\w.+\\-]+@[\\w\\-]+\\.[a-zA-Z]{2,}$")) {
+            setStatus("❌ Невірний формат email", "status-error");
+            return;
+        }
+
         try {
-            UserDto user = userService.findByEmail(email).orElse(null);
+            UserDto user = userService.findByEmailAndPassword(email, password).orElse(null);
             if (user == null) {
-                setStatus("❌ Користувача не знайдено", "status-error");
+                setStatus("❌ Невірний email або пароль", "status-error");
                 return;
             }
-            // TODO: додати перевірку хешу пароля BCrypt
             sessionManager.login(user);
             openMainWindow();
         } catch (Exception e) {
             setStatus("❌ Помилка входу: " + e.getMessage(), "status-error");
-            e.printStackTrace();
         }
     }
 
     @FXML
     private void goToRegistration() throws IOException {
         Stage stage = (Stage) emailField.getScene().getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/registration.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/registration.fxml"));
+        loader.setControllerFactory(SpringFxmlContext::getBean);
+        Parent root = loader.load();
         stage.setScene(new Scene(root, 900, 700));
         stage.setTitle("HeartSync — Реєстрація");
     }

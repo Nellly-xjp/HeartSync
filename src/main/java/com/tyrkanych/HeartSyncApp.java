@@ -30,7 +30,7 @@ public class HeartSyncApp extends Application {
         Parent root = loader.load();
         primaryStage.setTitle("HeartSync");
         primaryStage.setScene(new Scene(root, 460, 420));
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
 }

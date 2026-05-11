@@ -87,6 +87,11 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
         return findList(sql, gender);
     }
 
+    public void updateProfile(Long userId, String name, String city, String bio) {
+        String sql = "UPDATE users SET name = ?, city = ?, bio = ? WHERE id = ?";
+        executeUpdate(sql, name, city, bio, userId);
+    }
+
     @Override
     public void updatePassword(Long userId, String newPassword) {
         String sql = "UPDATE users SET password = ? WHERE id = ?";
