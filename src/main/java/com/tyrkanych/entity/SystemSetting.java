@@ -14,7 +14,6 @@ public class SystemSetting {
         this.settingValue = settingValue;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

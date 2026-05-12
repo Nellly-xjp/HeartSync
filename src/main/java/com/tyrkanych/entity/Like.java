@@ -17,7 +17,7 @@ public class Like {
         this.toUserId = toUserId;
     }
 
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }

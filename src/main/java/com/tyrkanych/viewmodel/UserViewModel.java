@@ -6,10 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-/**
- * MVVM ViewModel — Observable Properties для двостороннього binding. View прив'язується до цих
- * полів замість прямого виклику сервісів.
- */
+
 public class UserViewModel {
 
     private final StringProperty name = new SimpleStringProperty("");
@@ -19,9 +16,23 @@ public class UserViewModel {
     private final StringProperty gender = new SimpleStringProperty("");
     private final IntegerProperty age = new SimpleIntegerProperty(0);
     private final StringProperty initial = new SimpleStringProperty("?");
+    private final StringProperty photoPath = new SimpleStringProperty("");
     private Long userId;
 
+    public StringProperty photoPathProperty() {
+        return photoPath;
+    }
+
+    public String getPhotoPath() {
+        return photoPath.get();
+    }
+
+    public void setPhotoPath(String v) {
+        photoPath.set(v != null ? v : "");
+    }
+
     public void fromDto(UserDto dto) {
+
         if (dto == null) {
             return;
         }
@@ -32,6 +43,7 @@ public class UserViewModel {
         bio.set(dto.getBio() != null ? dto.getBio() : "");
         gender.set(dto.getGender() != null ? dto.getGender() : "");
         age.set(dto.getAge() != null ? dto.getAge() : 0);
+        photoPath.set(dto.getPhotoPath() != null ? dto.getPhotoPath() : "");
         initial.set(name.get().isBlank() ? "?"
                 : String.valueOf(name.get().charAt(0)).toUpperCase());
     }
@@ -112,4 +124,5 @@ public class UserViewModel {
     public boolean isLoaded() {
         return userId != null;
     }
+
 }

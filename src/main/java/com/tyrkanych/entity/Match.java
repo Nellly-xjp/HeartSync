@@ -11,8 +11,6 @@ public class Match {
     private Double compatibilityScore;
     private LocalDateTime createdAt;
 
-    // ==================== КОНСТРУКТОРИ ====================
-
     public Match() {
     }
 

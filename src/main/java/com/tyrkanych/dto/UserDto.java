@@ -12,8 +12,15 @@ public class UserDto {
     private String city;
     private String bio;
     private Integer age;
+    private String photoPath;
 
-    // ==================== GETTERS & SETTERS ====================
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
 
     public Long getId() {
         return id;

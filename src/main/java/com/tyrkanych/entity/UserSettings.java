@@ -16,7 +16,6 @@ public class UserSettings {
         this.userId = userId;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

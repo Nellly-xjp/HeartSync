@@ -19,7 +19,6 @@ public class Message {
         this.messageText = messageText;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

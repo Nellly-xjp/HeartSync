@@ -4,6 +4,7 @@ import com.tyrkanych.dao.impl.UserDaoImpl;
 import com.tyrkanych.entity.User;
 import com.tyrkanych.service.LikeService;
 import com.tyrkanych.session.SessionManager;
+import java.io.File;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +26,8 @@ public class DiscoverController {
     private final ObservableList<User> candidates = FXCollections.observableArrayList();
     @FXML
     private Label profileEmoji;
+    @FXML
+    private ImageView cardPhoto;
     @FXML
     private Label compatibilityBadge;
     @FXML
@@ -87,17 +92,44 @@ public class DiscoverController {
             interest1.setText("");
             interest2.setText("");
             interest3.setText("");
+            profileEmoji.setText("?");
+            if (cardPhoto != null) {
+                cardPhoto.setVisible(false);
+            }
             return;
         }
+
         User u = candidates.get(currentIndex);
         cardName.setText(u.getName() != null ? u.getName() : "Без імені");
         cardAge.setText(u.getAge() != null ? u.getAge() + " р." : "");
         cardCity.setText(u.getCity() != null ? "📍 " + u.getCity() : "");
         cardBio.setText(u.getBio() != null ? u.getBio() : "");
-        compatibilityBadge.setText("—"); // TODO: розрахунок сумісності
+        compatibilityBadge.setText("—");
         interest1.setText("");
         interest2.setText("");
         interest3.setText("");
+
+        // Показуємо фото або ініціал
+        if (cardPhoto != null && u.getPhotoPath() != null && !u.getPhotoPath().isEmpty()) {
+            File photoFile = new File(u.getPhotoPath());
+            if (photoFile.exists()) {
+                cardPhoto.setImage(new Image(photoFile.toURI().toString()));
+                cardPhoto.setVisible(true);
+                profileEmoji.setVisible(false);
+            } else {
+                cardPhoto.setVisible(false);
+                profileEmoji.setVisible(true);
+                profileEmoji.setText(u.getName() != null && !u.getName().isEmpty()
+                        ? String.valueOf(u.getName().charAt(0)).toUpperCase() : "?");
+            }
+        } else {
+            if (cardPhoto != null) {
+                cardPhoto.setVisible(false);
+            }
+            profileEmoji.setVisible(true);
+            profileEmoji.setText(u.getName() != null && !u.getName().isEmpty()
+                    ? String.valueOf(u.getName().charAt(0)).toUpperCase() : "?");
+        }
     }
 
     @FXML

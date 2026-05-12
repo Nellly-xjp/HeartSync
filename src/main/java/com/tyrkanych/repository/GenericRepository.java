@@ -2,12 +2,7 @@ package com.tyrkanych.repository;
 
 import com.tyrkanych.dao.BaseDao;
 
-/**
- * Базовий репозиторій — делегує виклики до відповідного DAO.
- * <p>
- * Виправлення: прибрано рефлексію getActualTypeArguments(), яка падала при використанні
- * конструктора з параметром замість прямого наслідування з типом.
- */
+
 public class GenericRepository<T, ID> {
 
     protected final BaseDao<T, ID> dao;

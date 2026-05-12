@@ -14,7 +14,6 @@ public class Admin {
     public Admin() {
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

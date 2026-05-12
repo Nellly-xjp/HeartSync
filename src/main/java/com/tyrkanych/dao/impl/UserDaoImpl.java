@@ -54,12 +54,18 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
                 rs.getDate("birth_date") != null ? rs.getDate("birth_date").toLocalDate() : null);
         user.setCity(rs.getString("city"));
         user.setBio(rs.getString("bio"));
+        user.setPhotoPath(rs.getString("photo_path"));
         return user;
     }
 
     @Override
     protected void setGeneratedId(User user, Long id) {
         user.setId(id);
+    }
+
+    public void updatePhoto(Long userId, String photoPath) {
+        String sql = "UPDATE users SET photo_path = ? WHERE id = ?";
+        executeUpdate(sql, photoPath, userId);
     }
 
     // ==================== SPECIFIC METHODS ====================

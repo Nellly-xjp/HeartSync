@@ -13,7 +13,6 @@ public class AuditLog {
     public AuditLog() {
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

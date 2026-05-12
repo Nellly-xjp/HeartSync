@@ -15,7 +15,7 @@ public class Report {
     public Report() {
     }
 
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }

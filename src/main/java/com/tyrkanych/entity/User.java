@@ -16,6 +16,7 @@ public class User {
     private String city;
     private String bio;
     private LocalDateTime createdAt;
+    private String photoPath;
 
     public User() {
     }
@@ -32,7 +33,14 @@ public class User {
         return new Builder();
     }
 
-    // ==================== GETTERS ====================
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
+
     public Long getId() {
         return id;
     }
@@ -143,9 +151,15 @@ public class User {
         private String city;
         private String bio;
         private LocalDateTime createdAt;
+        private String photoPath;
 
         public Builder id(Long id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder photoPath(String photoPath) {
+            this.photoPath = photoPath;
             return this;
         }
 

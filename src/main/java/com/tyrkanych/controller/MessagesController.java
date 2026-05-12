@@ -108,7 +108,6 @@ public class MessagesController {
             messagesContainer.getChildren().add(row);
         }
 
-        // Скрол донизу
         chatScrollPane.layout();
         chatScrollPane.setVvalue(1.0);
     }

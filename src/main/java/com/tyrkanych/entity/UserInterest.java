@@ -17,7 +17,6 @@ public class UserInterest {
         this.level = level;
     }
 
-    // Getters and Setters
     public Long getUserId() {
         return userId;
     }

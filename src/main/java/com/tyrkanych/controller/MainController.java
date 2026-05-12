@@ -3,6 +3,7 @@ package com.tyrkanych.controller;
 import com.tyrkanych.session.SessionManager;
 import com.tyrkanych.viewmodel.UserViewModel;
 import java.io.IOException;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class MainController {
 
     private final SessionManager sessionManager;
+
     @FXML
     private StackPane contentArea;
     @FXML
@@ -37,6 +39,7 @@ public class MainController {
     private Label sidebarCity;
     @FXML
     private Label avatarInitial;
+
     private Button activeButton;
 
     @Autowired
@@ -46,7 +49,6 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        // MVVM binding — сайдбар автоматично оновлюється через ViewModel
         UserViewModel vm = sessionManager.getViewModel();
         sidebarName.textProperty().bind(vm.nameProperty());
         sidebarCity.textProperty().bind(vm.cityProperty());
@@ -97,12 +99,22 @@ public class MainController {
         }
     }
 
+
     @FXML
     private void handleLogout() throws IOException {
         sessionManager.logout();
         Stage stage = (Stage) contentArea.getScene().getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+        loader.setControllerFactory(SpringFxmlContext::getBean);
+        Parent root = loader.load();
         stage.setScene(new Scene(root, 900, 650));
         stage.setTitle("HeartSync — Вхід");
+    }
+
+
+    @FXML
+    private void handleExit() {
+        Platform.exit();
+        System.exit(0);
     }
 }

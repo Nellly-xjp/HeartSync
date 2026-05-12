@@ -11,7 +11,6 @@ public class Preferences {
     private Integer maxAge = 100;
     private String city;
 
-    // ==================== КОНСТРУКТОРИ ====================
 
     public Preferences() {
     }

@@ -1,6 +1,7 @@
 package com.tyrkanych;
 
 import com.tyrkanych.config.AppConfig;
+import com.tyrkanych.config.ThemeManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,10 +27,16 @@ public class HeartSyncApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
         loader.setControllerFactory(springContext::getBean);
-
         Parent root = loader.load();
+
+        Scene scene = new Scene(root, 900, 650);
+
+        // Застосовуємо збережену тему
+        String css = getClass().getResource(ThemeManager.getCurrentTheme()).toExternalForm();
+        scene.getStylesheets().add(css);
+
         primaryStage.setTitle("HeartSync");
-        primaryStage.setScene(new Scene(root, 460, 420));
+        primaryStage.setScene(scene);
         primaryStage.setResizable(true);
         primaryStage.show();
     }

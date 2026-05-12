@@ -37,10 +37,6 @@ public class UserServiceImpl implements UserService {
     public UserDto register(UserRegistrationDto dto) {
         validationService.validateRegistration(dto);
 
-        if (userDao.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Користувач з таким email вже існує!");
-        }
-
         // Хешуємо пароль перед збереженням
         String hashedPassword = passwordEncoder.encode(dto.getPassword());
 
@@ -96,6 +92,7 @@ public class UserServiceImpl implements UserService {
         dto.setBirthDate(user.getBirthDate());
         dto.setCity(user.getCity());
         dto.setBio(user.getBio());
+        dto.setPhotoPath(user.getPhotoPath());
         if (user.getBirthDate() != null) {
             dto.setAge(Period.between(user.getBirthDate(), LocalDate.now()).getYears());
         }

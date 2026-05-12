@@ -36,9 +36,7 @@ public class TestConfig {
         return new JdbcTemplate(dataSource);
     }
 
-    /**
-     * TransactionManager — потрібен для коректної роботи @Transactional у сервісах під час тестів.
-     */
+
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);

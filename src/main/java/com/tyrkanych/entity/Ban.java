@@ -14,7 +14,6 @@ public class Ban {
     public Ban() {
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

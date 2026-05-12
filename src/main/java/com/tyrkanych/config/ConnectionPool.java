@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ConnectionPool {
 
-    // ==================== ЗМІНЕНО НА ФАЙЛОВУ БД ====================
     private static final String URL =
             "jdbc:h2:./data/heartsyncdb;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_UPPER=FALSE";
 

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
@@ -14,6 +15,8 @@
   stylesheets="@../styles/styles.css"
   xmlns="http://javafx.com/javafx/21"
   fx:controller="com.tyrkanych.controller.DiscoverController">
+
+  <!-- Заголовок + фільтри -->
   <HBox alignment="CENTER_LEFT" spacing="12">
     <Button onAction="#applyFilters" styleClass="btn-secondary" text="Застосувати"/>
     <ComboBox prefWidth="110" promptText="Стать" fx:id="genderFilter"/>
@@ -25,47 +28,85 @@
       <Label styleClass="label-muted" text="Знайди свою людину"/>
     </VBox>
   </HBox>
+
+  <!-- Картка профілю -->
   <HBox VBox.vgrow="ALWAYS" alignment="CENTER">
     <VBox alignment="TOP_CENTER" spacing="0" styleClass="match-card">
-      <HBox style="-fx-padding: 6 0 0 0;" alignment="CENTER" spacing="8">
-        <Label styleClass="label-muted" fx:id="cardAge"/>
-        <Label styleClass="label-muted" text="·"/>
-        <Label styleClass="match-card-city" fx:id="cardCity"/>
-      </HBox>
-      <HBox style="-fx-padding: 0 0 24 0;" alignment="CENTER" spacing="8">
-        <Label styleClass="badge" fx:id="interest1"/>
-        <Label styleClass="badge" fx:id="interest2"/>
-        <Label styleClass="badge" fx:id="interest3"/>
-      </HBox>
-      <HBox style="-fx-padding: 0 24 32 24;" alignment="CENTER" spacing="16">
-        <Button style="-fx-font-size: 20px; -fx-background-radius: 50;" onAction="#handlePass" prefHeight="56" prefWidth="56"
-          styleClass="btn-danger" text="✕"/>
-        <Button style="-fx-font-size: 16px; -fx-background-radius: 50; -fx-background-color: #F5A623; -fx-text-fill: white; -fx-cursor: hand;" onAction="#handleSuperLike" prefHeight="48"
+
+      <!-- Фото зверху картки -->
+      <HBox style="-fx-padding: 0 24 28 24;" alignment="CENTER"
+        spacing="16">
+        <Button style="-fx-font-size: 20px; -fx-background-radius: 50;" onAction="#handlePass"
+          prefHeight="56" prefWidth="56"
+          styleClass="btn-danger"
+          text="✕"/>
+        <Button style="-fx-font-size: 16px; -fx-background-radius: 50;
+                               -fx-background-color: #F5A623; -fx-text-fill: white;
+                               -fx-cursor: hand;" onAction="#handleSuperLike" prefHeight="48"
           prefWidth="48"
           text="★"/>
-        <Button style="-fx-font-size: 20px; -fx-background-radius: 50;" onAction="#handleLike" prefHeight="56" prefWidth="56"
-          styleClass="btn-primary" text="♥"/>
+        <Button style="-fx-font-size: 20px; -fx-background-radius: 50;" onAction="#handleLike"
+          prefHeight="56" prefWidth="56"
+          styleClass="btn-primary"
+          text="♥"/>
       </HBox>
-      <Label style="-fx-padding: 16 24 16 24; -fx-alignment: center;" styleClass="label-muted" wrapText="true"
-        fx:id="cardBio"/>
-      <Label style="-fx-alignment: center;" styleClass="match-card-name" wrapText="true"
-        fx:id="cardName"/>
-      <Label style="-fx-padding: 4 14;" styleClass="badge" fx:id="compatibilityBadge">
-        <VBox.margin>
-          <Insets bottom="16"/>
-        </VBox.margin>
-      </Label>
+
+      <!-- Інфо -->
       <Region VBox.vgrow="ALWAYS"/>
-      <StackPane
-        style="-fx-background-color: linear-gradient(135deg,#C4B4E8,#9B7DD4); -fx-background-radius: 50; -fx-min-width: 90; -fx-min-height: 90; -fx-max-width: 90; -fx-max-height: 90;"
+
+      <StackPane style="-fx-min-width: 360; -fx-pref-height: 220;
+                              -fx-max-height: 220; -fx-background-color: #C4B4E8;
+                              -fx-background-radius: 28 28 0 0;"
         alignment="CENTER">
-        <Label style="-fx-font-size: 36px; -fx-text-fill: white; -fx-font-weight: bold;" text="?"
+        <ImageView fitHeight="220"
+          fitWidth="360" preserveRatio="false"
+          visible="false"
+          fx:id="cardPhoto"/>
+        <Label style="-fx-font-size: 64px; -fx-text-fill: white;
+                              -fx-font-weight: bold;" text="?"
           fx:id="profileEmoji"/>
-        <VBox.margin>
-          <Insets bottom="16" top="32"/>
-        </VBox.margin>
       </StackPane>
+
+      <!-- Кнопки -->
+      <VBox style="-fx-padding: 16 20 0 20;" alignment="CENTER" spacing="0">
+
+        <!-- Бейдж сумісності -->
+        <HBox style="-fx-padding: 6 0 0 0;" alignment="CENTER" spacing="8">
+          <Label styleClass="label-muted" fx:id="cardAge"/>
+          <Label styleClass="label-muted" text="·"/>
+          <Label styleClass="match-card-city" fx:id="cardCity"/>
+        </HBox>
+
+        <!-- Ім'я -->
+        <HBox style="-fx-padding: 0 0 16 0;" alignment="CENTER"
+          spacing="8">
+          <Label styleClass="badge" fx:id="interest1"/>
+          <Label styleClass="badge" fx:id="interest2"/>
+          <Label styleClass="badge" fx:id="interest3"/>
+        </HBox>
+
+        <!-- Вік і місто -->
+        <Label style="-fx-padding: 4 14;" styleClass="badge"
+          fx:id="compatibilityBadge">
+          <VBox.margin>
+            <Insets bottom="12"/>
+          </VBox.margin>
+        </Label>
+
+        <!-- Біо -->
+        <Label style="-fx-padding: 12 0 12 0; -fx-alignment: center;" styleClass="label-muted" wrapText="true"
+          fx:id="cardBio"/>
+
+        <!-- Інтереси -->
+        <Label style="-fx-alignment: center;" styleClass="match-card-name"
+          wrapText="true" fx:id="cardName"/>
+
+      </VBox>
     </VBox>
   </HBox>
-  <Label style="-fx-alignment: center;" styleClass="status-info" fx:id="statusLabel"/>
+
+  <!-- Статус -->
+  <Label style="-fx-alignment: center;" styleClass="status-info"
+    fx:id="statusLabel"/>
+
 </VBox>

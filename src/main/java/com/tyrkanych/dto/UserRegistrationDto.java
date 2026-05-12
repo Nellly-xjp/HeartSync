@@ -12,7 +12,6 @@ public class UserRegistrationDto {
     private String city;
     private String bio;
 
-    // Getters and Setters
     public String getEmail() {
         return email;
     }
