@@ -1,0 +1,9 @@
+2026-05-07 01:46:01.722385+03:00 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "user_interests" не найдена
+Table "user_interests" not found; SQL statement:
+INSERT INTO user_interests (user_id, interest_id, level)
+VALUES (?, ?, ?) [42102-232]
+2026-05-07 01:53:45.878011+03:00 jdbc[18]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "system_settings" не найдена
+Table "system_settings" not found; SQL statement:
+INSERT INTO system_settings (setting_key, setting_value) VALUES (?, ?) [42102-232]

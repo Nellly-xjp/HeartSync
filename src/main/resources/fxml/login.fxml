@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1" styleClass="login-pane"
+  stylesheets="@../styles/styles.css"
+  xmlns="http://javafx.com/javafx/21"
+  fx:controller="com.tyrkanych.controller.LoginController">
+
+  <VBox alignment="CENTER" spacing="0">
+
+    <HBox alignment="CENTER" spacing="6">
+      <Label styleClass="login-logo-heart" text="♥"/>
+      <Label styleClass="login-logo" text="HeartSync"/>
+      <VBox.margin>
+        <Insets bottom="32"/>
+      </VBox.margin>
+    </HBox>
+
+    <VBox alignment="CENTER" spacing="0" styleClass="login-card">
+
+      <Button maxWidth="Infinity" onAction="#handleLogin" styleClass="btn-primary"
+        text="Увійти →"/>
+      <HBox style="-fx-padding: 24 0 24 0;" alignment="CENTER" spacing="12">
+        <Label styleClass="login-divider" text="або"/>
+        <Separator HBox.hgrow="ALWAYS"/>
+        <Separator HBox.hgrow="ALWAYS"/>
+      </HBox>
+
+      <HBox alignment="CENTER" spacing="6">
+        <Label styleClass="label-muted" text="Немає акаунту?"/>
+        <Label style="-fx-cursor: hand; -fx-font-size: 14px; -fx-text-fill: #7C5CBF; -fx-font-weight: bold;"
+          onMouseClicked="#goToRegistration"
+          text="Зареєструватись"/>
+      </HBox>
+      <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2D2550;"
+        text="З поверненням ✦"/>
+
+      <Label style="-fx-padding: 6 0 28 0;" styleClass="label-muted"
+        text="Увійдіть щоб продовжити"/>
+      <Label maxWidth="Infinity" styleClass="field-label" text="EMAIL"/>
+
+      <Label maxWidth="Infinity" styleClass="field-label" text="ПАРОЛЬ"/>
+
+      <Label style="-fx-padding: 10 0 0 0;" maxWidth="360" styleClass="status-error"
+        wrapText="true" fx:id="statusLabel"/>
+
+      <PasswordField maxWidth="Infinity" promptText="••••••••" fx:id="passwordField">
+        <VBox.margin>
+          <Insets bottom="24"/>
+        </VBox.margin>
+      </PasswordField>
+
+      <TextField maxWidth="Infinity" promptText="your@email.com" fx:id="emailField">
+        <VBox.margin>
+          <Insets bottom="16"/>
+        </VBox.margin>
+      </TextField>
+
+    </VBox>
+  </VBox>
+</StackPane>

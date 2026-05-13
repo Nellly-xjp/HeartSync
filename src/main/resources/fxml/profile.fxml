@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox styleClass="pane-root" spacing="28" stylesheets="@../styles/styles.css"
+  xmlns="http://javafx.com/javafx/21"
+  xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="com.tyrkanych.controller.ProfileController">
+
+  <!-- Ліва колонка -->
+  <VBox spacing="20" prefWidth="300">
+
+    <VBox styleClass="card" spacing="16" alignment="CENTER">
+
+      <!-- Аватар -->
+      <StackPane fx:id="avatarPane" alignment="CENTER"
+        style="-fx-background-color: #C4B4E8;
+                              -fx-background-radius: 60;
+                              -fx-min-width: 120; -fx-min-height: 120;
+                              -fx-max-width: 120; -fx-max-height: 120;
+                              -fx-cursor: hand;"
+        onMouseClicked="#handleChoosePhoto">
+        <ImageView fx:id="profilePhoto"
+          fitWidth="120" fitHeight="120"
+          preserveRatio="false"
+          visible="false"/>
+        <Label fx:id="profileInitial"
+          style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+      </StackPane>
+
+      <!-- Кнопка вибору фото -->
+      <Button text="📷  Змінити фото"
+        styleClass="btn-secondary"
+        onAction="#handleChoosePhoto"/>
+
+      <Label fx:id="profileName"
+        style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2D2550;"/>
+      <Label fx:id="profileEmail" styleClass="label-muted"/>
+
+      <HBox alignment="CENTER" spacing="8">
+        <Label fx:id="profileAge" styleClass="badge"/>
+        <Label fx:id="profileGender" styleClass="badge"/>
+      </HBox>
+      <Label fx:id="profileCity" styleClass="label-muted"/>
+    </VBox>
+
+    <!-- Статистика -->
+    <VBox styleClass="card" spacing="12">
+      <Label text="СТАТИСТИКА" styleClass="settings-section-title"
+        style="-fx-padding: 0;"/>
+      <HBox alignment="CENTER" spacing="0">
+        <VBox alignment="CENTER" HBox.hgrow="ALWAYS" spacing="4">
+          <Label fx:id="statsLikes"
+            style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #7C5CBF;"/>
+          <Label text="Лайки" styleClass="label-muted"/>
+        </VBox>
+        <Separator orientation="VERTICAL"/>
+        <VBox alignment="CENTER" HBox.hgrow="ALWAYS" spacing="4">
+          <Label fx:id="statsMatches"
+            style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #C44569;"/>
+          <Label text="Збіги" styleClass="label-muted"/>
+        </VBox>
+        <Separator orientation="VERTICAL"/>
+        <VBox alignment="CENTER" HBox.hgrow="ALWAYS" spacing="4">
+          <Label fx:id="statsMessages"
+            style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2D8653;"/>
+          <Label text="Чати" styleClass="label-muted"/>

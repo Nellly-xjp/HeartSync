@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns:fx="http://javafx.com/fxml/1" styleClass="pane-root"
+  stylesheets="@../styles/styles.css"
+  xmlns="http://javafx.com/javafx/21"
+  fx:controller="com.tyrkanych.controller.MainController">
+
+  <!-- ══ Бічна панель ══ -->
+  <StackPane HBox.hgrow="ALWAYS" styleClass="pane-content" fx:id="contentArea"/>
+
+  <!-- ══ Основний контент ══ -->
+  <VBox spacing="0" styleClass="pane-sidebar">
+
+    <!-- Логотип -->
+    <Button maxWidth="Infinity" onAction="#showDiscover" styleClass="nav-item"
+      text="🔍  Пошук" fx:id="btnDiscover"/>
+
+    <!-- Аватар -->
+    <Button maxWidth="Infinity" onAction="#showMatches" styleClass="nav-item"
+      text="💘  Збіги" fx:id="btnMatches"/>
+
+    <!-- Меню -->
+    <Button maxWidth="Infinity" onAction="#showMessages" styleClass="nav-item"
+      text="💬  Повідомлення" fx:id="btnMessages"/>
+
+    <Button maxWidth="Infinity" onAction="#showProfile" styleClass="nav-item"
+      text="👤  Профіль" fx:id="btnProfile"/>
+    <Button maxWidth="Infinity" onAction="#showSettings" styleClass="nav-item"
+      text="⚙️  Налаштування" fx:id="btnSettings"/>
+    <Button style="-fx-padding: 14 20; -fx-alignment: center-left;" maxWidth="Infinity"
+      onAction="#handleLogout"
+      styleClass="btn-ghost"
+      text="👤  Вийти з акаунту"/>
+    <Button style="-fx-padding: 14 20; -fx-alignment: center-left; -fx-text-fill: #C44569;"
+      maxWidth="Infinity"
+      onAction="#handleExit"
+      styleClass="btn-ghost"
+      text="✕  Вийти з програми"/>
+    <HBox style="-fx-padding: 28 20 24 20;" alignment="CENTER_LEFT" spacing="8">
+      <Label style="-fx-font-size: 22px;" styleClass="login-logo-heart" text="♥"/>
+      <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2D2550;"
+        text="HeartSync"/>
+    </HBox>
+
+    <!-- Розпірка -->
+    <HBox style="-fx-padding: 0 20 28 20;" alignment="CENTER_LEFT" spacing="14">
+      <StackPane style="-fx-background-color: #C4B4E8; -fx-background-radius: 50;
+                              -fx-min-width: 44; -fx-min-height: 44;
+                              -fx-max-width: 44; -fx-max-height: 44;"
+        alignment="CENTER">
+        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"
+          fx:id="avatarInitial"/>
+      </StackPane>
+      <VBox spacing="2">
+        <Label style="-fx-font-weight: bold; -fx-text-fill: #2D2550; -fx-font-size: 14px;"
+          fx:id="sidebarName"/>
+        <Label style="-fx-font-size: 11px;" styleClass="label-muted" fx:id="sidebarCity"/>
+      </VBox>
+    </HBox>
+
+    <Label style="-fx-padding: 0 20 8 20;" styleClass="settings-section-title" text="МЕНЮ"/>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <!-- Вийти з програми -->
+    <Separator/>
+
+  </VBox>
+
+</HBox>

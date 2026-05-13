@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="24" styleClass="pane-root"
+  stylesheets="@../styles/styles.css"
+  xmlns="http://javafx.com/javafx/21"
+  fx:controller="com.tyrkanych.controller.SettingsController">
+
+  <Label styleClass="label-title" text="Налаштування"/>
+
+  <!-- Тема -->
+  <Label wrapText="true" fx:id="settingsStatus"/>
+
+  <!-- Уподобання -->
+  <VBox spacing="16" styleClass="card">
+    <Button onAction="#savePreferences" styleClass="btn-primary"
+      text="Зберегти уподобання"/>
+    <GridPane hgap="16" vgap="16">
+      <VBox GridPane.columnIndex="0" spacing="4">
+        <ComboBox maxWidth="Infinity" fx:id="prefGender"/>
+        <Label styleClass="field-label" text="СТАТЬ"/>
+      </VBox>
+      <VBox GridPane.columnIndex="1" spacing="4">
+        <Label styleClass="field-label" text="ВІК ВІД"/>
+        <TextField promptText="18" fx:id="prefMinAge"/>
+      </VBox>
+      <VBox GridPane.columnIndex="2" spacing="4">
+        <Label styleClass="field-label" text="ВІК ДО"/>
+        <TextField promptText="60" fx:id="prefMaxAge"/>
+      </VBox>
+      <VBox GridPane.columnIndex="0" GridPane.columnSpan="3" spacing="4">
+        <Label styleClass="field-label" text="МІСТО"/>
+        <TextField maxWidth="Infinity" promptText="Будь-яке місто" fx:id="prefCity"/>
+      </VBox>
+      <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="33"/>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="33"/>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="33"/>
+      </columnConstraints>
+    </GridPane>
+    <Label style="-fx-padding: 0;" styleClass="settings-section-title"
+      text="УПОДОБАННЯ ПОШУКУ"/>
+  </VBox>
+
+  <!-- Сповіщення -->
+  <VBox spacing="16" styleClass="card">
+    <Button onAction="#savePrivacy" styleClass="btn-secondary" text="Зберегти"/>
+    <CheckBox text="Нові повідомлення" fx:id="notifyMessages"/>
+    <CheckBox text="Нові збіги" fx:id="notifyMatches"/>
+    <Label style="-fx-padding: 0;" styleClass="settings-section-title"
+      text="СПОВІЩЕННЯ"/>
+  </VBox>
+
+  <!-- Небезпечна зона -->
+  <VBox spacing="12" styleClass="card">
+    <Button onAction="#deleteAccount" styleClass="btn-danger" text="Видалити акаунт"/>
+    <Label styleClass="label-muted" text="Видалення акаунту — незворотня дія"/>
+    <Label style="-fx-padding: 0; -fx-text-fill: #C44569;" styleClass="settings-section-title"
+      text="НЕБЕЗПЕЧНА ЗОНА"/>
+  </VBox>
+
+  <VBox spacing="16" styleClass="card">
+    <HBox alignment="CENTER_LEFT" spacing="12">
+      <Button onAction="#setLightTheme" styleClass="btn-secondary"
+        text="☀️  Світла" fx:id="btnLightTheme"/>
+      <Button onAction="#setDarkTheme" styleClass="btn-secondary"
+        text="🌙  Темна" fx:id="btnDarkTheme"/>
+    </HBox>
+    <Label style="-fx-padding: 0;" styleClass="settings-section-title"
+      text="ТЕМА ОФОРМЛЕННЯ"/>
+    <Label style="-fx-font-size: 11px;" styleClass="label-muted" fx:id="themeStatus"/>
+  </VBox>
+
+</VBox>
