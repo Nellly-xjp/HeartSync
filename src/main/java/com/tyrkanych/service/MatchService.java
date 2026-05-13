@@ -13,4 +13,5 @@ public interface MatchService {
     List<Match> findByUserId(Long userId);
 
     List<Match> findAll();
+
 }

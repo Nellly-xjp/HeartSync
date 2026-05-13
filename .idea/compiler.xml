@@ -9,6 +9,9 @@
         <module name="heartsync" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="heartsync (1)" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
