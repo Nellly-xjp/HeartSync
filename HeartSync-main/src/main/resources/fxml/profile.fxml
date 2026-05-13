@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox styleClass="pane-root" spacing="28" stylesheets="@../styles/styles.css"
+<HBox styleClass="pane-root" spacing="28"
   xmlns="http://javafx.com/javafx/21"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="com.tyrkanych.controller.ProfileController">

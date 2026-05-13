@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml/1" styleClass="login-pane"
-  stylesheets="@../styles/styles.css"
+
   xmlns="http://javafx.com/javafx/21"
   fx:controller="com.tyrkanych.controller.LoginController">
 
