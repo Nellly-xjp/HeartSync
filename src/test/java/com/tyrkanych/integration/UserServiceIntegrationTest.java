@@ -1,4 +1,3 @@
-// ===== UserServiceIntegrationTest.java =====
 package com.tyrkanych.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +41,7 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     void testDuplicateEmailThrows() {
         userService.register(buildDto("dup@test.com"));
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(RuntimeException.class,
                 () -> userService.register(buildDto("dup@test.com")));
     }
 

@@ -1,6 +1,12 @@
 package com.tyrkanych.controller;
 
 import com.tyrkanych.dao.impl.UserDaoImpl;
+import com.tyrkanych.entity.Match;
+import com.tyrkanych.entity.Message;
+import com.tyrkanych.entity.User;
+import com.tyrkanych.service.ExportService;
+import com.tyrkanych.service.MatchService;
+import com.tyrkanych.service.MessageService;
 import com.tyrkanych.session.SessionManager;
 import com.tyrkanych.viewmodel.UserViewModel;
 import java.io.File;
@@ -8,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -27,42 +34,37 @@ public class ProfileController {
 
     private final SessionManager sessionManager;
     private final UserDaoImpl userDao;
+    private final ExportService exportService;
+    private final MatchService matchService;
+    private final MessageService messageService;
 
-    @FXML
-    private StackPane avatarPane;
-    @FXML
-    private ImageView profilePhoto;
-    @FXML
-    private Label profileInitial;
-    @FXML
-    private Label profileName;
-    @FXML
-    private Label profileCity;
-    @FXML
-    private Label profileAge;
-    @FXML
-    private Label profileGender;
-    @FXML
-    private Label profileEmail;
-    @FXML
-    private TextField editName;
-    @FXML
-    private TextField editCity;
-    @FXML
-    private TextArea editBio;
-    @FXML
-    private Label saveStatus;
-    @FXML
-    private Label statsLikes;
-    @FXML
-    private Label statsMatches;
-    @FXML
-    private Label statsMessages;
+    @FXML private StackPane avatarPane;
+    @FXML private ImageView profilePhoto;
+    @FXML private Label profileInitial;
+    @FXML private Label profileName;
+    @FXML private Label profileCity;
+    @FXML private Label profileAge;
+    @FXML private Label profileGender;
+    @FXML private Label profileEmail;
+    @FXML private TextField editName;
+    @FXML private TextField editCity;
+    @FXML private TextArea editBio;
+    @FXML private Label saveStatus;
+    @FXML private Label statsLikes;
+    @FXML private Label statsMatches;
+    @FXML private Label statsMessages;
 
     @Autowired
-    public ProfileController(SessionManager sessionManager, UserDaoImpl userDao) {
+    public ProfileController(SessionManager sessionManager,
+            UserDaoImpl userDao,
+            ExportService exportService,
+            MatchService matchService,
+            MessageService messageService) {
         this.sessionManager = sessionManager;
         this.userDao = userDao;
+        this.exportService = exportService;
+        this.matchService = matchService;
+        this.messageService = messageService;
     }
 
     @FXML
@@ -81,11 +83,20 @@ public class ProfileController {
         profileAge.setText(vm.getAge() > 0 ? vm.getAge() + " р." : "");
         profileGender.setText(vm.getGender());
 
-        statsLikes.setText("0");
-        statsMatches.setText("0");
-        statsMessages.setText("0");
+        // Статистика
+        Long myId = sessionManager.getCurrentUserId();
+        if (myId != null) {
+            int matchCount = matchService.findByUserId(myId).size();
+            int messageCount = messageService.getRecentMessages(myId, 1000).size();
+            statsLikes.setText("0");
+            statsMatches.setText(String.valueOf(matchCount));
+            statsMessages.setText(String.valueOf(messageCount));
+        } else {
+            statsLikes.setText("0");
+            statsMatches.setText("0");
+            statsMessages.setText("0");
+        }
 
-        // Завантажуємо фото якщо є
         loadPhoto(vm.getPhotoPath());
     }
 
@@ -97,8 +108,6 @@ public class ProfileController {
                 profilePhoto.setImage(image);
                 profilePhoto.setVisible(true);
                 profileInitial.setVisible(false);
-
-                // Робимо фото круглим
                 Circle clip = new Circle(60, 60, 60);
                 profilePhoto.setClip(clip);
             }
@@ -115,48 +124,33 @@ public class ProfileController {
 
         Stage stage = (Stage) avatarPane.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(stage);
-
-        if (selectedFile == null) {
-            return;
-        }
+        if (selectedFile == null) return;
 
         Task<String> uploadTask = new Task<>() {
             @Override
             protected String call() throws Exception {
                 Path photosDir = Paths.get("data/photos");
                 Files.createDirectories(photosDir);
-
                 String fileName = sessionManager.getCurrentUserId()
                         + "_" + System.currentTimeMillis()
                         + getExtension(selectedFile.getName());
-
                 Path destination = photosDir.resolve(fileName);
                 Files.copy(selectedFile.toPath(), destination,
                         StandardCopyOption.REPLACE_EXISTING);
-
                 return destination.toAbsolutePath().toString();
             }
         };
 
         uploadTask.setOnSucceeded(e -> {
             String newPath = uploadTask.getValue();
-
-            // Зберігаємо в БД
             userDao.updatePhoto(sessionManager.getCurrentUserId(), newPath);
-
-            // Оновлюємо ViewModel
             sessionManager.getViewModel().setPhotoPath(newPath);
-
-            // Показуємо фото
             Image image = new Image(new File(newPath).toURI().toString());
             profilePhoto.setImage(image);
             profilePhoto.setVisible(true);
             profileInitial.setVisible(false);
-
-            // Робимо фото круглим
             Circle clip = new Circle(60, 60, 60);
             profilePhoto.setClip(clip);
-
             saveStatus.setText("✅ Фото оновлено!");
             saveStatus.getStyleClass().removeAll("status-error", "status-info");
             saveStatus.getStyleClass().add("status-success");
@@ -202,9 +196,7 @@ public class ProfileController {
             vm.setName(name);
             vm.setCity(city);
             vm.setBio(bio);
-
             profileCity.setText("📍 " + (city.isEmpty() ? "—" : city));
-
             saveStatus.setText("✅ Збережено!");
             saveStatus.getStyleClass().removeAll("status-error", "status-info");
             saveStatus.getStyleClass().add("status-success");
@@ -226,5 +218,83 @@ public class ProfileController {
         editCity.setText(vm.getCity());
         editBio.setText(vm.getBio());
         saveStatus.setText("");
+    }
+
+    @FXML
+    private void exportToPdf() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Зберегти PDF звіт");
+        fileChooser.setInitialFileName("heartsync_report.pdf");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF файли", "*.pdf"));
+
+        Stage stage = (Stage) editName.getScene().getWindow();
+        File file = fileChooser.showSaveDialog(stage);
+        if (file == null) return;
+
+        Task<File> task = new Task<>() {
+            @Override
+            protected File call() throws Exception {
+                Long myId = sessionManager.getCurrentUserId();
+                User user = userDao.findById(myId).orElseThrow();
+                List<Match> matches = matchService.findByUserId(myId);
+                List<Message> messages = messageService.getRecentMessages(myId, 100);
+                return exportService.exportToPdf(user, matches, messages,
+                        file.getAbsolutePath());
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            saveStatus.setText("✅ PDF збережено: " + file.getName());
+            saveStatus.getStyleClass().removeAll("status-error", "status-info");
+            saveStatus.getStyleClass().add("status-success");
+        });
+
+        task.setOnFailed(e -> {
+            saveStatus.setText("❌ Помилка PDF: " + task.getException().getMessage());
+            saveStatus.getStyleClass().removeAll("status-success", "status-info");
+            saveStatus.getStyleClass().add("status-error");
+        });
+
+        new Thread(task).start();
+    }
+
+    @FXML
+    private void exportToExcel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Зберегти Excel звіт");
+        fileChooser.setInitialFileName("heartsync_report.xlsx");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel файли", "*.xlsx"));
+
+        Stage stage = (Stage) editName.getScene().getWindow();
+        File file = fileChooser.showSaveDialog(stage);
+        if (file == null) return;
+
+        Task<File> task = new Task<>() {
+            @Override
+            protected File call() throws Exception {
+                Long myId = sessionManager.getCurrentUserId();
+                User user = userDao.findById(myId).orElseThrow();
+                List<Match> matches = matchService.findByUserId(myId);
+                List<Message> messages = messageService.getRecentMessages(myId, 100);
+                return exportService.exportToExcel(user, matches, messages,
+                        file.getAbsolutePath());
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            saveStatus.setText("✅ Excel збережено: " + file.getName());
+            saveStatus.getStyleClass().removeAll("status-error", "status-info");
+            saveStatus.getStyleClass().add("status-success");
+        });
+
+        task.setOnFailed(e -> {
+            saveStatus.setText("❌ Помилка Excel: " + task.getException().getMessage());
+            saveStatus.getStyleClass().removeAll("status-success", "status-info");
+            saveStatus.getStyleClass().add("status-error");
+        });
+
+        new Thread(task).start();
     }
 }

@@ -1,4 +1,3 @@
-// ===== UserInterestDaoImpl.java =====
 package com.tyrkanych.dao.impl;
 
 import com.tyrkanych.dao.UserInterestDao;

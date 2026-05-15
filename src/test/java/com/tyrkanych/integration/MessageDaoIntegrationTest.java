@@ -1,4 +1,3 @@
-// ===== MessageDaoIntegrationTest.java =====
 package com.tyrkanych.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

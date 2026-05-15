@@ -24,10 +24,7 @@ public abstract class BaseIntegrationTest {
     @BeforeEach
     void cleanDatabase() {
         try {
-            // Вимикаємо перевірку зовнішніх ключів (H2 синтаксис)
             jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
-
-            // DELETE працює в усіх версіях H2 на відміну від TRUNCATE IF EXISTS
             jdbcTemplate.execute("DELETE FROM user_interests");
             jdbcTemplate.execute("DELETE FROM likes");
             jdbcTemplate.execute("DELETE FROM matches");
@@ -37,8 +34,6 @@ public abstract class BaseIntegrationTest {
             jdbcTemplate.execute("DELETE FROM bans");
             jdbcTemplate.execute("DELETE FROM interests");
             jdbcTemplate.execute("DELETE FROM users");
-
-            // Скидаємо AUTO_INCREMENT лічильники щоб ID починались з 1
             jdbcTemplate.execute("ALTER TABLE users ALTER COLUMN id RESTART WITH 1");
             jdbcTemplate.execute("ALTER TABLE interests ALTER COLUMN id RESTART WITH 1");
             jdbcTemplate.execute("ALTER TABLE likes ALTER COLUMN id RESTART WITH 1");
@@ -48,7 +43,6 @@ public abstract class BaseIntegrationTest {
             jdbcTemplate.execute("ALTER TABLE reports ALTER COLUMN id RESTART WITH 1");
             jdbcTemplate.execute("ALTER TABLE bans ALTER COLUMN id RESTART WITH 1");
 
-            // Вмикаємо перевірку зовнішніх ключів назад
             jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
 
         } catch (Exception e) {

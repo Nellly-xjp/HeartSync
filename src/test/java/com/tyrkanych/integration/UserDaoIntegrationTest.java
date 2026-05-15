@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserDaoIntegrationTest extends BaseIntegrationTest {
 
-    @Autowired  // Spring інжектить — не new UserDaoImpl()
+    @Autowired
     private UserDaoImpl userDao;
 
     @Test
@@ -34,7 +34,7 @@ public class UserDaoIntegrationTest extends BaseIntegrationTest {
         userDao.save(new User("b@mail.com", "1", "B", "female", LocalDate.now()));
 
         List<User> users = userDao.findAll();
-        assertEquals(2, users.size()); // точно 2, бо @BeforeEach очищує
+        assertEquals(2, users.size());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class UserDaoIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testCount() {
-        assertEquals(0, userDao.count()); // після очищення = 0
+        assertEquals(0, userDao.count());
         userDao.save(new User("count@mail.com", "1", "Count", "male", LocalDate.now()));
         assertEquals(1, userDao.count());
     }

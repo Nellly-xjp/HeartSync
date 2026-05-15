@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MatchServiceIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
-    private MatchService matchService;  // Spring інжектить — не new!
+    private MatchService matchService;
 
     @Autowired
     private UserDaoImpl userDao;

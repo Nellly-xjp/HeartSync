@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SettingsController {
 
-    // Шляхи до CSS файлів
     private static final String LIGHT_CSS = "/styles/styles.css";
     private static final String DARK_CSS = "/styles/styles-dark.css";
     private final PreferencesService preferencesService;

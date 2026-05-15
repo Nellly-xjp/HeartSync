@@ -90,7 +90,7 @@ public class DatabaseInitializer {
             for (String sql : createStatements) {
                 stmt.execute(sql);
             }
-            System.out.println("✅ Таблиці створено успішно (IF NOT EXISTS)");
+            System.out.println(" Таблиці створено успішно (IF NOT EXISTS)");
 
         } catch (SQLException e) {
             throw new RuntimeException("Помилка створення таблиць", e);
@@ -110,10 +110,10 @@ public class DatabaseInitializer {
             stmt.executeUpdate("DELETE FROM interests");
             stmt.executeUpdate("DELETE FROM users");
 
-            System.out.println("🧹 Таблиці очищено");
+            System.out.println(" Таблиці очищено");
 
         } catch (SQLException e) {
-            System.err.println("⚠️ Помилка очищення таблиць: " + e.getMessage());
+            System.err.println(" Помилка очищення таблиць: " + e.getMessage());
         }
     }
 }

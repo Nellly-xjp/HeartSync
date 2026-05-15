@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
     birth_date DATE,
     city VARCHAR(100),
     bio TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    photo_path VARCHAR(500)
 );
 
 CREATE TABLE IF NOT EXISTS interests (

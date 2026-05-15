@@ -27,7 +27,6 @@ public class Preferences {
         return id;
     }
 
-    // ==================== GETTERS & SETTERS ====================
 
     public void setId(Long id) {
         this.id = id;

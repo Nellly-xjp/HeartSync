@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MatchDaoIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
-    private MatchDao matchDao;          // ← Spring інжектить
+    private MatchDao matchDao;
 
     @Autowired
-    private com.tyrkanych.dao.UserDao userDao;   // ← теж через інтерфейс
+    private com.tyrkanych.dao.UserDao userDao;
 
     @Test
     void testCreateMatch() {

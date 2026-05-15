@@ -30,8 +30,6 @@ public class Main {
             DatabaseInitializer.createTables();
             System.out.println("✅ Таблиці створено успішно!\n");
 
-            // ====================== ТЕСТУВАННЯ DAO ======================
-
             // --- UserDao ---
             UserDaoImpl userDao = new UserDaoImpl();
             System.out.println("=== Тест UserDao ===");

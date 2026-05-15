@@ -5,10 +5,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
-/**
- * AOP Aspect для логування часу виконання та обробки виключень у сервісному шарі. Доповнює
- * LoggingAspect — реалізує обробку транзакцій через Around advice.
- */
 @Aspect
 @Component
 public class TransactionAspect {
@@ -18,20 +14,20 @@ public class TransactionAspect {
         String methodName = joinPoint.getSignature().getName();
         long startTime = System.currentTimeMillis();
 
-        System.out.println("⏳ Початок транзакції: " + methodName);
+        System.out.println("Початок транзакції: " + methodName);
 
         try {
             Object result = joinPoint.proceed();
             long elapsed = System.currentTimeMillis() - startTime;
-            System.out.println("✅ Транзакція завершена: " + methodName + " (" + elapsed + "ms)");
+            System.out.println(" Транзакція завершена: " + methodName + " (" + elapsed + "ms)");
             return result;
 
         } catch (IllegalArgumentException e) {
-            System.out.println("⚠️ Бізнес-помилка у " + methodName + ": " + e.getMessage());
+            System.out.println("Бізнес-помилка у " + methodName + ": " + e.getMessage());
             throw e;
 
         } catch (Exception e) {
-            System.out.println("❌ Помилка транзакції у " + methodName + ": " + e.getMessage());
+            System.out.println(" Помилка транзакції у " + methodName + ": " + e.getMessage());
             throw e;
         }
     }

@@ -21,7 +21,6 @@ public abstract class BaseJdbcDao<T, ID> implements BaseDao<T, ID> {
         return dataSource.getConnection();
     }
 
-    // ==================== ABSTRACT METHODS ====================
     protected abstract String getTableName();
 
     protected abstract String getIdColumnName();
@@ -34,7 +33,6 @@ public abstract class BaseJdbcDao<T, ID> implements BaseDao<T, ID> {
 
     protected abstract void setGeneratedId(T entity, Long id);
 
-    // ==================== COMMON CRUD ====================
     @Override
     public T save(T entity) {
         String sql = getInsertSql();
