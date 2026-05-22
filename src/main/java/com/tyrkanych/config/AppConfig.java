@@ -47,14 +47,22 @@ public class AppConfig {
         return mailSender;
     }
 
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+
+    @Value("${spring.datasource.username}")
+    private String dbUsername;
+
+    @Value("${spring.datasource.password}")
+    private String dbPassword;
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        ds.setUrl(
-                "jdbc:mysql://localhost:3306/heartsyncdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true");
-        ds.setUsername("root");
-        ds.setPassword("112233");
+        ds.setUrl(dbUrl);
+        ds.setUsername(dbUsername);
+        ds.setPassword(dbPassword);
         return ds;
     }
 
