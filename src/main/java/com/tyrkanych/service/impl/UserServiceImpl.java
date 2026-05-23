@@ -93,6 +93,8 @@ public class UserServiceImpl implements UserService {
         dto.setCity(user.getCity());
         dto.setBio(user.getBio());
         dto.setPhotoPath(user.getPhotoPath());
+        dto.setRole(user.getRole());
+        dto.setIsBanned(user.getIsBanned());
         if (user.getBirthDate() != null) {
             dto.setAge(Period.between(user.getBirthDate(), LocalDate.now()).getYears());
         }

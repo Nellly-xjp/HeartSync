@@ -1,6 +1,7 @@
 package com.tyrkanych.controller;
 
 import com.tyrkanych.config.LanguageManager;
+import com.tyrkanych.config.ThemeManager;
 import com.tyrkanych.dto.UserDto;
 import com.tyrkanych.service.UserService;
 import com.tyrkanych.session.SessionManager;
@@ -82,11 +83,31 @@ public class LoginController {
                 setStatus("❌ Невірний email або пароль", "status-error");
                 return;
             }
+            if (Boolean.TRUE.equals(user.getIsBanned())) {
+                setStatus("❌ Акаунт заблоковано", "status-error");
+                return;
+            }
             sessionManager.login(user);
-            openMainWindow();
+            if ("admin".equals(user.getRole())) {
+                openAdminWindow();
+            } else {
+                openMainWindow();
+            }
         } catch (Exception e) {
             setStatus("❌ Помилка входу: " + e.getMessage(), "status-error");
         }
+    }
+
+    private void openAdminWindow() throws IOException {
+        Stage stage = (Stage) emailField.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/fxml/admin.fxml"));
+        loader.setControllerFactory(SpringFxmlContext::getBean);
+        Parent root = loader.load();
+        Scene scene = new Scene(root, 1100, 700);
+        ThemeManager.registerScene(scene); // ← додано
+        stage.setScene(scene);
+        stage.setTitle("HeartSync — Admin Panel");
     }
 
     @FXML
@@ -96,7 +117,9 @@ public class LoginController {
                 getClass().getResource("/fxml/registration.fxml"));
         loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
-        stage.setScene(new Scene(root, 900, 700));
+        Scene scene = new Scene(root, 900, 700);
+        ThemeManager.registerScene(scene); // ← додано
+        stage.setScene(scene);
         stage.setTitle("HeartSync — " + LanguageManager.get("register.title"));
     }
 
@@ -106,7 +129,9 @@ public class LoginController {
                 getClass().getResource("/fxml/main.fxml"));
         loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
-        stage.setScene(new Scene(root, 1100, 700));
+        Scene scene = new Scene(root, 1100, 700);
+        ThemeManager.registerScene(scene); // ← додано
+        stage.setScene(scene);
         stage.setTitle("HeartSync");
     }
 

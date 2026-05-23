@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx/21"
+  xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="com.tyrkanych.controller.AdminController"
+  styleClass="pane-root">
+
+  <!-- Сайдбар -->
+  <VBox spacing="0" styleClass="pane-sidebar">
+    <HBox style="-fx-padding: 28 20 24 20;" alignment="CENTER_LEFT" spacing="8">
+      <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #C44569;"
+        text="⚙ Admin Panel"/>
+    </HBox>
+
+    <Label style="-fx-padding: 0 20 8 20;" styleClass="settings-section-title"
+      text="ПАНЕЛЬ" fx:id="labelPanel"/>
+
+    <Button maxWidth="Infinity" onAction="#showReports" styleClass="nav-item"
+      text="⚠  Скарги" fx:id="btnReports"/>
+    <Button maxWidth="Infinity" onAction="#showUsers" styleClass="nav-item"
+      text="👥  Користувачі" fx:id="btnUsers"/>
+    <Button maxWidth="Infinity" onAction="#showBanned" styleClass="nav-item"
+      text="🚫  Забанені" fx:id="btnBanned"/>
+    <Button maxWidth="Infinity" onAction="#showStats" styleClass="nav-item"
+      text="📊  Статистика" fx:id="btnStats"/>
+    <Button maxWidth="Infinity" onAction="#showSettings" styleClass="nav-item"
+      text="⚙  Налаштування" fx:id="btnSettings"/>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <Separator/>
+
+    <Button maxWidth="Infinity" onAction="#handleLogout" styleClass="btn-ghost"
+      style="-fx-padding: 14 20; -fx-alignment: center-left;"
+      text="👤  Вийти з акаунту" fx:id="btnLogout"/>
+    <Button maxWidth="Infinity" onAction="#handleExit" styleClass="btn-ghost"
+      style="-fx-padding: 14 20; -fx-alignment: center-left; -fx-text-fill: #C44569;"
+      text="✕  Вийти з програми" fx:id="btnExit"/>
+  </VBox>
+
+  <!-- Контент -->
+  <VBox HBox.hgrow="ALWAYS" styleClass="pane-content" fx:id="adminContent" spacing="20">
+    <Label styleClass="label-title" fx:id="contentTitle" text="Панель адміністратора"/>
+
+    <!-- Скарги -->
+    <VBox fx:id="reportsPane" spacing="16" VBox.vgrow="ALWAYS">
+      <HBox spacing="12" VBox.vgrow="ALWAYS">
+        <ListView fx:id="reportsList" prefWidth="340" VBox.vgrow="ALWAYS"/>
+        <VBox spacing="12" HBox.hgrow="ALWAYS">
+          <VBox styleClass="card" spacing="8">
+            <Label fx:id="labelReportDetail" styleClass="settings-section-title"
+              style="-fx-padding: 0;" text="ДЕТАЛІ СКАРГИ"/>
+            <Label fx:id="reportReporter" styleClass="label-muted"/>
+            <Label fx:id="reportTarget" styleClass="label-muted"/>
+            <Label fx:id="reportReason" wrapText="true"/>
+          </VBox>
+          <HBox spacing="12">
+            <Button fx:id="btnBan" styleClass="btn-danger"
+              text="🚫  Забанити" onAction="#banSelected"/>
+            <Button fx:id="btnDismiss" styleClass="btn-secondary"
+              text="✓  Відхилити" onAction="#dismissReport"/>
+          </HBox>
+          <Label fx:id="adminStatus" styleClass="status-info"/>
+        </VBox>
+      </HBox>
+    </VBox>
+
+    <!-- Користувачі -->
+    <VBox fx:id="usersPane" spacing="16" visible="false" managed="false" VBox.vgrow="ALWAYS">
+      <ListView fx:id="usersList" VBox.vgrow="ALWAYS"/>
+      <HBox spacing="12">
+        <Button fx:id="btnBanUser" styleClass="btn-danger"
+          text="🚫  Забанити" onAction="#banSelectedUser"/>
+        <Label fx:id="usersStatus" styleClass="status-info"/>
+      </HBox>
+    </VBox>
+
+    <!-- Забанені -->
+    <VBox fx:id="bannedPane" spacing="16" visible="false" managed="false" VBox.vgrow="ALWAYS">
+      <ListView fx:id="bannedList" VBox.vgrow="ALWAYS"/>
+      <HBox spacing="12">
+        <Button fx:id="btnUnban" styleClass="btn-secondary"
+          text="✓  Розбанити" onAction="#unbanSelected"/>
+        <Label fx:id="bannedStatus" styleClass="status-info"/>
+      </HBox>
+    </VBox>
+
+    <!-- Статистика -->
+    <VBox fx:id="statsPane" spacing="24" visible="false" managed="false">
+      <HBox spacing="16">
+        <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="8" alignment="CENTER">
+          <Label fx:id="statUsers"
+            style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #7C5CBF;"/>
+          <Label fx:id="labelStatUsers" text="Користувачів" styleClass="label-muted"/>
+        </VBox>
+        <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="8" alignment="CENTER">
+          <Label fx:id="statReports"
+            style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #C44569;"/>
+          <Label fx:id="labelStatReports" text="Скарг" styleClass="label-muted"/>
+        </VBox>
+        <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="8" alignment="CENTER">
+          <Label fx:id="statBanned"
+            style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: #F5A623;"/>
+          <Label fx:id="labelStatBanned" text="Забанених" styleClass="label-muted"/>
+        </VBox>
+      </HBox>
+    </VBox>
+
+    <!-- Налаштування -->
+    <VBox fx:id="settingsPane" spacing="24" visible="false" managed="false">
+      <VBox styleClass="card" spacing="16">
+        <Label fx:id="labelThemeTitle" styleClass="settings-section-title"
+          style="-fx-padding: 0;" text="ТЕМА ОФОРМЛЕННЯ"/>
+        <HBox spacing="12">
+          <Button fx:id="btnLightTheme" styleClass="btn-secondary"
+            text="Світла" onAction="#setLightTheme"/>
+          <Button fx:id="btnDarkTheme" styleClass="btn-secondary"
+            text="Темна" onAction="#setDarkTheme"/>
+        </HBox>
+        <Label fx:id="adminThemeStatus" styleClass="label-muted"/>
+      </VBox>
+
+      <VBox styleClass="card" spacing="16">
+        <Label fx:id="labelLangTitle" styleClass="settings-section-title"
+          style="-fx-padding: 0;" text="МОВА / LANGUAGE"/>
+        <HBox spacing="12">
+          <Button styleClass="btn-secondary" text="Українська" onAction="#setLangUk"/>
+          <Button styleClass="btn-secondary" text="English" onAction="#setLangEn"/>
+        </HBox>
+      </VBox>
+    </VBox>
+
+  </VBox>
+</HBox>

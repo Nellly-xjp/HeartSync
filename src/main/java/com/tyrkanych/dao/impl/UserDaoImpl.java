@@ -55,6 +55,8 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
         user.setCity(rs.getString("city"));
         user.setBio(rs.getString("bio"));
         user.setPhotoPath(rs.getString("photo_path"));
+        try { user.setRole(rs.getString("role")); } catch (SQLException ignored) {}
+        try { user.setIsBanned(rs.getBoolean("is_banned")); } catch (SQLException ignored) {}
         return user;
     }
 
@@ -102,5 +104,14 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
     public void updatePassword(Long userId, String newPassword) {
         String sql = "UPDATE users SET password = ? WHERE id = ?";
         executeUpdate(sql, newPassword, userId);
+    }
+    public void setBanned(Long userId, boolean banned) {
+        String sql = "UPDATE users SET is_banned = ? WHERE id = ?";
+        executeUpdate(sql, banned, userId);
+    }
+
+    public Optional<User> findByEmailAndPassword(String email, String password) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        return findBy(sql, email);
     }
 }

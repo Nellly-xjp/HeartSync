@@ -1,5 +1,7 @@
 package com.tyrkanych.controller;
 
+import com.tyrkanych.config.LanguageManager;
+import com.tyrkanych.config.ThemeManager;
 import com.tyrkanych.dto.UserDto;
 import com.tyrkanych.dto.UserRegistrationDto;
 import com.tyrkanych.service.UserService;
@@ -35,43 +37,55 @@ public class RegistrationController {
     private final VerificationService verificationService;
     private final SessionManager sessionManager;
     private final List<String> selectedInterests = new ArrayList<>();
-    // Крок 1 — email + пароль
-    @FXML
-    private StackPane step1Pane;
-    @FXML
-    private TextField emailField;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private PasswordField confirmPasswordField;
-    @FXML
-    private Label step1Status;
-    // Крок 2 — код підтвердження
-    @FXML
-    private StackPane step2Pane;
-    @FXML
-    private TextField codeField;
-    @FXML
-    private Label step2Status;
-    @FXML
-    private Label codeEmailLabel;
-    // Крок 3 — профіль
-    @FXML
-    private StackPane step3Pane;
-    @FXML
-    private TextField nameField;
-    @FXML
-    private ComboBox<String> genderComboBox;
-    @FXML
-    private DatePicker birthDatePicker;
-    @FXML
-    private TextField cityField;
-    @FXML
-    private TextArea bioArea;
-    @FXML
-    private FlowPane interestsPane;
-    @FXML
-    private Label step3Status;
+
+    @FXML private StackPane step1Pane;
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmPasswordField;
+    @FXML private Label step1Status;
+
+    @FXML private StackPane step2Pane;
+    @FXML private TextField codeField;
+    @FXML private Label step2Status;
+    @FXML private Label codeEmailLabel;
+
+    @FXML private StackPane step3Pane;
+    @FXML private TextField nameField;
+    @FXML private ComboBox<String> genderComboBox;
+    @FXML private DatePicker birthDatePicker;
+    @FXML private TextField cityField;
+    @FXML private TextArea bioArea;
+    @FXML private FlowPane interestsPane;
+    @FXML private Label step3Status;
+
+    // Labels для перекладу — крок 1
+    @FXML private Button btnSendCode;
+    @FXML private Label labelStep1Title;
+    @FXML private Label labelStep1Sub;
+    @FXML private Label labelHaveAccount;
+    @FXML private Label labelGoLogin;
+    @FXML private Label labelEmailField;
+    @FXML private Label labelPasswordField;
+    @FXML private Label labelConfirmField;
+
+    // Labels для перекладу — крок 2
+    @FXML private Button btnVerifyCode;
+    @FXML private Label labelStep2Sub;
+    @FXML private Label labelStep2Title;
+    @FXML private Label labelResendCode;
+    @FXML private Label labelCodeField;
+
+    // Labels для перекладу — крок 3
+    @FXML private Button btnRegister;
+    @FXML private Label labelStep3Title;
+    @FXML private Label labelStep3Sub;
+    @FXML private Label labelGenderField;
+    @FXML private Label labelBirthField;
+    @FXML private Label labelNameField;
+    @FXML private Label labelCityField;
+    @FXML private Label labelBioField;
+    @FXML private Label labelInterestsField;
+
     private String verifiedEmail;
     private String verifiedPassword;
 
@@ -86,12 +100,43 @@ public class RegistrationController {
 
     @FXML
     public void initialize() {
+        applyLanguage();
+        LanguageManager.addListener(this::applyLanguage);
         genderComboBox.getItems().addAll("male", "female", "other");
         showStep(1);
         loadInterests();
     }
 
-    // ══ КРОК 1 ══
+    private void applyLanguage() {
+        // Крок 1
+        if (btnSendCode != null) btnSendCode.setText(LanguageManager.get("register.btn"));
+        if (labelStep1Title != null) labelStep1Title.setText(LanguageManager.get("register.title"));
+        if (labelStep1Sub != null) labelStep1Sub.setText(LanguageManager.get("register.step1"));
+        if (labelHaveAccount != null) labelHaveAccount.setText(LanguageManager.get("register.have.account"));
+        if (labelGoLogin != null) labelGoLogin.setText(LanguageManager.get("register.login"));
+        if (labelEmailField != null) labelEmailField.setText(LanguageManager.get("register.email"));
+        if (labelPasswordField != null) labelPasswordField.setText(LanguageManager.get("register.password"));
+        if (labelConfirmField != null) labelConfirmField.setText(LanguageManager.get("register.confirm"));
+
+        // Крок 2
+        if (btnVerifyCode != null) btnVerifyCode.setText(LanguageManager.get("register.verify"));
+        if (labelStep2Title != null) labelStep2Title.setText(LanguageManager.get("register.check.mail"));
+        if (labelStep2Sub != null) labelStep2Sub.setText(LanguageManager.get("register.step2"));
+        if (labelResendCode != null) labelResendCode.setText(LanguageManager.get("register.resend"));
+        if (labelCodeField != null) labelCodeField.setText(LanguageManager.get("register.code"));
+
+        // Крок 3
+        if (btnRegister != null) btnRegister.setText(LanguageManager.get("register.create"));
+        if (labelStep3Title != null) labelStep3Title.setText(LanguageManager.get("register.about.title"));
+        if (labelStep3Sub != null) labelStep3Sub.setText(LanguageManager.get("register.step3"));
+        if (labelGenderField != null) labelGenderField.setText(LanguageManager.get("register.gender"));
+        if (labelBirthField != null) labelBirthField.setText(LanguageManager.get("register.birth"));
+        if (labelNameField != null) labelNameField.setText(LanguageManager.get("register.name"));
+        if (labelCityField != null) labelCityField.setText(LanguageManager.get("register.city"));
+        if (labelBioField != null) labelBioField.setText(LanguageManager.get("register.bio"));
+        if (labelInterestsField != null) labelInterestsField.setText(LanguageManager.get("register.interests"));
+    }
+
     @FXML
     private void handleSendCode() {
         String email = emailField.getText().trim();
@@ -125,7 +170,6 @@ public class RegistrationController {
 
         setStatus(step1Status, "⏳ Надсилаємо код...", "status-info");
 
-        // JavaFX Task замість new Thread()
         Task<Void> sendTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
@@ -149,7 +193,6 @@ public class RegistrationController {
         new Thread(sendTask).start();
     }
 
-    // ══ КРОК 2 ══
     @FXML
     private void handleVerifyCode() {
         String code = codeField.getText().trim();
@@ -173,7 +216,6 @@ public class RegistrationController {
     @FXML
     private void handleResendCode() {
         setStatus(step2Status, "⏳ Надсилаємо...", "status-info");
-
         Task<Void> resendTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
@@ -181,19 +223,13 @@ public class RegistrationController {
                 return null;
             }
         };
-
         resendTask.setOnSucceeded(e ->
-                setStatus(step2Status, "✅ Новий код надіслано!", "status-success")
-        );
+                setStatus(step2Status, "✅ Новий код надіслано!", "status-success"));
         resendTask.setOnFailed(e ->
-                setStatus(step2Status, "❌ " + resendTask.getException().getMessage(),
-                        "status-error")
-        );
-
+                setStatus(step2Status, "❌ " + resendTask.getException().getMessage(), "status-error"));
         new Thread(resendTask).start();
     }
 
-    // ══ КРОК 3 ══
     @FXML
     private void handleRegister() {
         String name = nameField.getText().trim();
@@ -239,13 +275,13 @@ public class RegistrationController {
             sessionManager.login(created);
 
             Stage stage = (Stage) nameField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/fxml/main.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
             loader.setControllerFactory(SpringFxmlContext::getBean);
             Parent root = loader.load();
-            stage.setScene(new Scene(root, 1100, 700));
+            Scene scene = new Scene(root, 1100, 700);
+            ThemeManager.registerScene(scene);
+            stage.setScene(scene);
             stage.setTitle("HeartSync ♥");
-
         } catch (Exception e) {
             setStatus(step3Status, "❌ " + e.getMessage(), "status-error");
         }
@@ -282,22 +318,20 @@ public class RegistrationController {
     }
 
     private void showStep(int step) {
-        step1Pane.setVisible(step == 1);
-        step1Pane.setManaged(step == 1);
-        step2Pane.setVisible(step == 2);
-        step2Pane.setManaged(step == 2);
-        step3Pane.setVisible(step == 3);
-        step3Pane.setManaged(step == 3);
+        step1Pane.setVisible(step == 1); step1Pane.setManaged(step == 1);
+        step2Pane.setVisible(step == 2); step2Pane.setManaged(step == 2);
+        step3Pane.setVisible(step == 3); step3Pane.setManaged(step == 3);
     }
 
     @FXML
     private void goToLogin() throws IOException {
         Stage stage = (Stage) emailField.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
         loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
-        stage.setScene(new Scene(root, 900, 650));
+        Scene scene = new Scene(root, 900, 650);
+        ThemeManager.registerScene(scene);
+        stage.setScene(scene);
         stage.setTitle("HeartSync — Вхід");
     }
 

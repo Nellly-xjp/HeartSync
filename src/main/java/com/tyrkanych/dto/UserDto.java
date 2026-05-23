@@ -13,6 +13,8 @@ public class UserDto {
     private String bio;
     private Integer age;
     private String photoPath;
+    private String role;
+    private Boolean isBanned;
 
     public String getPhotoPath() {
         return photoPath;
@@ -84,5 +86,22 @@ public class UserDto {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Boolean getIsBanned() {
+        return isBanned;
+    }
+
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 }

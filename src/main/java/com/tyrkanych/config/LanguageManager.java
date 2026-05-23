@@ -1,16 +1,19 @@
 package com.tyrkanych.config;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 public class LanguageManager {
-    private static String currentLang = "uk";
-    private static ResourceBundle bundle = loadBundle("uk");
+    private static final String PREFS_FILE = "heartsync.properties";
+    private static String currentLang = loadSavedLang();
+    private static ResourceBundle bundle = loadBundle(currentLang);
     private static final List<Runnable> listeners = new ArrayList<>();
 
     public static String getCurrentLang() {
@@ -20,6 +23,7 @@ public class LanguageManager {
     public static void setLanguage(String lang) {
         currentLang = lang;
         bundle = loadBundle(lang);
+        saveLang(lang);
         notifyListeners();
     }
 
@@ -27,7 +31,7 @@ public class LanguageManager {
         try {
             return bundle.getString(key);
         } catch (Exception e) {
-            return key; // повертаємо ключ якщо переклад не знайдено
+            return key;
         }
     }
 
@@ -42,6 +46,30 @@ public class LanguageManager {
     private static void notifyListeners() {
         for (Runnable listener : listeners) {
             javafx.application.Platform.runLater(listener);
+        }
+    }
+
+    private static String loadSavedLang() {
+        try {
+            Properties props = new Properties();
+            props.load(new FileInputStream(PREFS_FILE));
+            return props.getProperty("language", "uk");
+        } catch (Exception e) {
+            return "uk";
+        }
+    }
+
+    private static void saveLang(String lang) {
+        try {
+            Properties props = new Properties();
+            // Зберігаємо існуючі налаштування
+            try {
+                props.load(new FileInputStream(PREFS_FILE));
+            } catch (Exception ignored) {}
+            props.setProperty("language", lang);
+            props.store(new FileOutputStream(PREFS_FILE), "HeartSync preferences");
+        } catch (Exception e) {
+            System.err.println("Cannot save language: " + e.getMessage());
         }
     }
 

@@ -1,11 +1,15 @@
 package com.tyrkanych.config;
 
 import javafx.scene.Scene;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class ThemeManager {
-    private static String currentTheme = "/styles/styles.css";
+    private static final String PREFS_FILE = "heartsync.properties";
+    private static String currentTheme = loadSavedTheme();
     private static final List<Scene> managedScenes = new ArrayList<>();
 
     public static void registerScene(Scene scene) {
@@ -21,7 +25,7 @@ public class ThemeManager {
 
     public static void setCurrentTheme(String theme) {
         currentTheme = theme;
-        // Застосовуємо до всіх зареєстрованих сцен
+        saveTheme(theme);
         for (Scene scene : managedScenes) {
             applyThemeTo(scene);
         }
@@ -33,7 +37,6 @@ public class ThemeManager {
         }
     }
 
-    // Для зворотної сумісності з MainController
     public static void setMainScene(Scene scene) {
         registerScene(scene);
     }
@@ -41,13 +44,7 @@ public class ThemeManager {
     private static void applyThemeTo(Scene scene) {
         if (scene == null) return;
         java.net.URL url = ThemeManager.class.getResource(currentTheme);
-        System.out.println("Applying theme: " + currentTheme);
-        System.out.println("URL: " + url);
-        System.out.println("managedScenes size: " + managedScenes.size());
-        if (url == null) {
-            System.out.println("❌ CSS файл не знайдено!");
-            return;
-        }
+        if (url == null) return;
         String cssUrl = url.toExternalForm();
         if (javafx.application.Platform.isFxApplicationThread()) {
             scene.getStylesheets().clear();
@@ -57,6 +54,29 @@ public class ThemeManager {
                 scene.getStylesheets().clear();
                 scene.getStylesheets().add(cssUrl);
             });
+        }
+    }
+
+    private static String loadSavedTheme() {
+        try {
+            Properties props = new Properties();
+            props.load(new FileInputStream(PREFS_FILE));
+            return props.getProperty("theme", "/styles/styles.css");
+        } catch (Exception e) {
+            return "/styles/styles.css";
+        }
+    }
+
+    private static void saveTheme(String theme) {
+        try {
+            Properties props = new Properties();
+            try {
+                props.load(new FileInputStream(PREFS_FILE));
+            } catch (Exception ignored) {}
+            props.setProperty("theme", theme);
+            props.store(new FileOutputStream(PREFS_FILE), "HeartSync preferences");
+        } catch (Exception e) {
+            System.err.println("Cannot save theme: " + e.getMessage());
         }
     }
 }
