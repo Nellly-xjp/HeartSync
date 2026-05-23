@@ -25,37 +25,24 @@ public class DiscoverController {
     private final LikeService likeService;
     private final MatchService matchService;
     private final SessionManager sessionManager;
-    private final ObservableList<User> candidates = FXCollections.observableArrayList();
-    @FXML
-    private Label profileEmoji;
-    @FXML
-    private ImageView cardPhoto;
-    @FXML
-    private Label compatibilityBadge;
-    @FXML
-    private Label cardName;
-    @FXML
-    private Label cardAge;
-    @FXML
-    private Label cardCity;
-    @FXML
-    private Label cardBio;
-    @FXML
-    private Label interest1;
-    @FXML
-    private Label interest2;
-    @FXML
-    private Label interest3;
-    @FXML
-    private Label statusLabel;
-    @FXML
-    private ComboBox<String> genderFilter;
-    @FXML
-    private TextField cityFilter;
-    @FXML
-    private TextField minAge;
-    @FXML
-    private TextField maxAge;
+    private final ObservableList<User> candidates =
+            FXCollections.observableArrayList();
+
+    @FXML private Label profileEmoji;
+    @FXML private ImageView cardPhoto;
+    @FXML private Label compatibilityBadge;
+    @FXML private Label cardName;
+    @FXML private Label cardAge;
+    @FXML private Label cardCity;
+    @FXML private Label cardBio;
+    @FXML private Label interest1;
+    @FXML private Label interest2;
+    @FXML private Label interest3;
+    @FXML private Label statusLabel;
+    @FXML private ComboBox<String> genderFilter;
+    @FXML private TextField minAge;
+    @FXML private TextField maxAge;
+
     private int currentIndex = 0;
 
     @Autowired
@@ -78,9 +65,20 @@ public class DiscoverController {
 
     private void loadCandidates() {
         Long myId = sessionManager.getCurrentUserId();
+        User me = userDao.findById(myId).orElse(null);
+        String myCity = me != null && me.getCity() != null
+                ? me.getCity().toLowerCase().trim() : "";
+
         List<User> all = userDao.findAll().stream()
                 .filter(u -> !u.getId().equals(myId))
+                // Фільтр по місту — тільки з мого міста
+                .filter(u -> myCity.isEmpty() ||
+                        (u.getCity() != null &&
+                                u.getCity().toLowerCase().trim().equals(myCity)))
+                // Виключаємо вже лайкнутих
+                .filter(u -> !likeService.existsLike(myId, u.getId()))
                 .toList();
+
         candidates.setAll(all);
         currentIndex = 0;
         showCurrentCard();
@@ -97,9 +95,8 @@ public class DiscoverController {
             interest2.setText("");
             interest3.setText("");
             profileEmoji.setText("?");
-            if (cardPhoto != null) {
-                cardPhoto.setVisible(false);
-            }
+            profileEmoji.setVisible(true);
+            if (cardPhoto != null) cardPhoto.setVisible(false);
             return;
         }
 
@@ -113,8 +110,8 @@ public class DiscoverController {
         interest2.setText("");
         interest3.setText("");
 
-        // Показуємо фото або ініціал
-        if (cardPhoto != null && u.getPhotoPath() != null && !u.getPhotoPath().isEmpty()) {
+        if (cardPhoto != null && u.getPhotoPath() != null
+                && !u.getPhotoPath().isEmpty()) {
             File photoFile = new File(u.getPhotoPath());
             if (photoFile.exists()) {
                 cardPhoto.setImage(new Image(photoFile.toURI().toString()));
@@ -123,36 +120,60 @@ public class DiscoverController {
             } else {
                 cardPhoto.setVisible(false);
                 profileEmoji.setVisible(true);
-                profileEmoji.setText(u.getName() != null && !u.getName().isEmpty()
-                        ? String.valueOf(u.getName().charAt(0)).toUpperCase() : "?");
+                profileEmoji.setText(getInitial(u.getName()));
             }
         } else {
-            if (cardPhoto != null) {
-                cardPhoto.setVisible(false);
-            }
+            if (cardPhoto != null) cardPhoto.setVisible(false);
             profileEmoji.setVisible(true);
-            profileEmoji.setText(u.getName() != null && !u.getName().isEmpty()
-                    ? String.valueOf(u.getName().charAt(0)).toUpperCase() : "?");
+            profileEmoji.setText(getInitial(u.getName()));
         }
+    }
+
+    @FXML
+    private void applyFilters() {
+        Long myId = sessionManager.getCurrentUserId();
+        User me = userDao.findById(myId).orElse(null);
+        String myCity = me != null && me.getCity() != null
+                ? me.getCity().toLowerCase().trim() : "";
+
+        String gender = genderFilter.getValue();
+        int min = parseIntOrDefault(minAge.getText(), 18);
+        int max = parseIntOrDefault(maxAge.getText(), 99);
+
+        List<User> filtered = userDao.findAll().stream()
+                .filter(u -> !u.getId().equals(myId))
+                // Місто завжди фільтруємо по місту поточного користувача
+                .filter(u -> myCity.isEmpty() ||
+                        (u.getCity() != null &&
+                                u.getCity().toLowerCase().trim().equals(myCity)))
+                // Виключаємо вже лайкнутих
+                .filter(u -> !likeService.existsLike(myId, u.getId()))
+                // Фільтр за статтю
+                .filter(u -> gender == null || gender.equals("Всі") ||
+                        gender.equals(u.getGender()))
+                // Фільтр за віком
+                .filter(u -> u.getAge() == null ||
+                        (u.getAge() >= min && u.getAge() <= max))
+                .toList();
+
+        candidates.setAll(filtered);
+        currentIndex = 0;
+        showCurrentCard();
     }
 
     @FXML
     private void handleLike() {
         if (!hasCandidate()) return;
-
         User target = candidates.get(currentIndex);
         Long myId = sessionManager.getCurrentUserId();
-
         try {
             likeService.addLike(myId, target.getId());
-
-            // Перевіряємо чи є взаємний лайк
             boolean mutual = likeService.existsLike(target.getId(), myId);
-
             if (mutual) {
                 matchService.createMatch(myId, target.getId(), null);
-                statusLabel.setText("🎉 Збіг з " + target.getName() + "! Напишіть їм!");
-                statusLabel.setStyle("-fx-text-fill: #C44569; -fx-font-weight: bold; -fx-font-size: 14px;");
+                statusLabel.setText("🎉 Збіг з " + target.getName() + "!");
+                statusLabel.setStyle(
+                        "-fx-text-fill: #C44569; -fx-font-weight: bold;");
             } else {
                 statusLabel.setText("♥ Лайк!");
                 statusLabel.setStyle("-fx-text-fill: #7C5CBF;");
@@ -165,41 +186,16 @@ public class DiscoverController {
 
     @FXML
     private void handlePass() {
-        if (!hasCandidate()) {
-            return;
-        }
+        if (!hasCandidate()) return;
         statusLabel.setText("Пропущено");
         nextCandidate();
     }
 
     @FXML
     private void handleSuperLike() {
-        if (!hasCandidate()) {
-            return;
-        }
+        if (!hasCandidate()) return;
         statusLabel.setText("⭐ Супер-лайк!");
         nextCandidate();
-    }
-
-    @FXML
-    private void applyFilters() {
-        Long myId = sessionManager.getCurrentUserId();
-        String gender = genderFilter.getValue();
-        String city = cityFilter.getText().trim().toLowerCase();
-        int min = parseIntOrDefault(minAge.getText(), 18);
-        int max = parseIntOrDefault(maxAge.getText(), 99);
-
-        List<User> filtered = userDao.findAll().stream()
-                .filter(u -> !u.getId().equals(myId))
-                .filter(u -> gender == null || gender.equals("Всі") || gender.equals(u.getGender()))
-                .filter(u -> city.isEmpty() || (u.getCity() != null && u.getCity().toLowerCase()
-                        .contains(city)))
-                .filter(u -> u.getAge() == null || (u.getAge() >= min && u.getAge() <= max))
-                .toList();
-
-        candidates.setAll(filtered);
-        currentIndex = 0;
-        showCurrentCard();
     }
 
     private void nextCandidate() {
@@ -209,6 +205,11 @@ public class DiscoverController {
 
     private boolean hasCandidate() {
         return candidates != null && currentIndex < candidates.size();
+    }
+
+    private String getInitial(String name) {
+        return (name != null && !name.isEmpty())
+                ? String.valueOf(name.charAt(0)).toUpperCase() : "?";
     }
 
     private int parseIntOrDefault(String text, int def) {

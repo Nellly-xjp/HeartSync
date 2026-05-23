@@ -2,6 +2,7 @@ package com.tyrkanych.controller;
 
 import com.tyrkanych.session.SessionManager;
 import com.tyrkanych.viewmodel.UserViewModel;
+import java.io.File;
 import java.io.IOException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -11,7 +12,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,24 +25,16 @@ public class MainController {
 
     private final SessionManager sessionManager;
 
-    @FXML
-    private StackPane contentArea;
-    @FXML
-    private Button btnDiscover;
-    @FXML
-    private Button btnMatches;
-    @FXML
-    private Button btnMessages;
-    @FXML
-    private Button btnProfile;
-    @FXML
-    private Button btnSettings;
-    @FXML
-    private Label sidebarName;
-    @FXML
-    private Label sidebarCity;
-    @FXML
-    private Label avatarInitial;
+    @FXML private StackPane contentArea;
+    @FXML private Button btnDiscover;
+    @FXML private Button btnMatches;
+    @FXML private Button btnMessages;
+    @FXML private Button btnProfile;
+    @FXML private Button btnSettings;
+    @FXML private Label sidebarName;
+    @FXML private Label sidebarCity;
+    @FXML private Label avatarInitial;
+    @FXML private ImageView sidebarPhoto;
 
     private Button activeButton;
 
@@ -54,8 +50,33 @@ public class MainController {
         sidebarCity.textProperty().bind(vm.cityProperty());
         avatarInitial.textProperty().bind(vm.initialProperty());
 
+        loadSidebarPhoto(vm.getPhotoPath());
+
+        vm.photoPathProperty().addListener((obs, oldVal, newVal) -> {
+            loadSidebarPhoto(newVal);
+        });
+
         activeButton = btnDiscover;
         showDiscover();
+    }
+
+    private void loadSidebarPhoto(String photoPath) {
+        if (photoPath != null && !photoPath.isEmpty()) {
+            File file = new File(photoPath);
+            if (file.exists()) {
+                Image image = new Image(file.toURI().toString());
+                sidebarPhoto.setImage(image);
+                sidebarPhoto.setVisible(true);
+                Circle clip = new Circle(22, 22, 22);
+                sidebarPhoto.setClip(clip);
+                avatarInitial.setVisible(false);
+                return;
+            }
+        }
+        if (sidebarPhoto != null) {
+            sidebarPhoto.setVisible(false);
+        }
+        avatarInitial.setVisible(true);
     }
 
     @FXML
@@ -88,7 +109,8 @@ public class MainController {
             if (activeButton != null) {
                 activeButton.getStyleClass().remove("nav-item-active");
             }
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(fxmlPath));
             loader.setControllerFactory(SpringFxmlContext::getBean);
             Node content = loader.load();
             contentArea.getChildren().setAll(content);
@@ -99,18 +121,17 @@ public class MainController {
         }
     }
 
-
     @FXML
     private void handleLogout() throws IOException {
         sessionManager.logout();
         Stage stage = (Stage) contentArea.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/fxml/login.fxml"));
         loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
         stage.setScene(new Scene(root, 900, 650));
         stage.setTitle("HeartSync — Вхід");
     }
-
 
     @FXML
     private void handleExit() {
