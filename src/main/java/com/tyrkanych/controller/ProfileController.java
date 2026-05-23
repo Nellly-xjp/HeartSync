@@ -1,5 +1,6 @@
 package com.tyrkanych.controller;
 
+import com.tyrkanych.config.LanguageManager;
 import com.tyrkanych.dao.impl.UserDaoImpl;
 import com.tyrkanych.entity.Match;
 import com.tyrkanych.entity.Message;
@@ -98,6 +99,11 @@ public class ProfileController {
         }
 
         loadPhoto(vm.getPhotoPath());
+    }
+    private void applyLanguage() {
+        if (editName != null) editName.setPromptText(LanguageManager.get("profile.name"));
+        if (editCity != null) editCity.setPromptText(LanguageManager.get("profile.city"));
+        if (editBio != null) editBio.setPromptText(LanguageManager.get("profile.bio"));
     }
 
     private void loadPhoto(String photoPath) {

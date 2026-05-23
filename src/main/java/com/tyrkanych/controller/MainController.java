@@ -1,5 +1,6 @@
 package com.tyrkanych.controller;
 
+import com.tyrkanych.config.LanguageManager;
 import com.tyrkanych.config.ThemeManager;
 import com.tyrkanych.session.SessionManager;
 import com.tyrkanych.viewmodel.UserViewModel;
@@ -44,7 +45,6 @@ public class MainController {
         this.sessionManager = sessionManager;
     }
 
-
     @FXML
     public void initialize() {
         UserViewModel vm = sessionManager.getViewModel();
@@ -53,21 +53,31 @@ public class MainController {
         avatarInitial.textProperty().bind(vm.initialProperty());
 
         loadSidebarPhoto(vm.getPhotoPath());
-        vm.photoPathProperty().addListener((obs, oldVal, newVal) -> {
-            loadSidebarPhoto(newVal);
-        });
+        vm.photoPathProperty().addListener((obs, oldVal, newVal) -> loadSidebarPhoto(newVal));
+
+        applyLanguage();
+        LanguageManager.addListener(this::applyLanguage);
 
         activeButton = btnDiscover;
         showDiscover();
 
         Platform.runLater(() -> {
             Scene scene = contentArea.getScene();
-            System.out.println("Scene: " + scene); // ← додай
-            System.out.println("Scenes count: " + scene); // ← додай
-            if (scene != null) {
-                ThemeManager.setMainScene(scene);
-            }
+            if (scene != null) ThemeManager.setMainScene(scene);
         });
+    }
+
+    private void applyLanguage() {
+        if (btnDiscover != null)
+            btnDiscover.setText("🔍  " + LanguageManager.get("nav.discover"));
+        if (btnMatches != null)
+            btnMatches.setText("💘  " + LanguageManager.get("nav.matches"));
+        if (btnMessages != null)
+            btnMessages.setText("💬  " + LanguageManager.get("nav.messages"));
+        if (btnProfile != null)
+            btnProfile.setText("👤  " + LanguageManager.get("nav.profile"));
+        if (btnSettings != null)
+            btnSettings.setText("⚙️  " + LanguageManager.get("nav.settings"));
     }
 
     private void loadSidebarPhoto(String photoPath) {
@@ -83,57 +93,30 @@ public class MainController {
                 return;
             }
         }
-        if (sidebarPhoto != null) {
-            sidebarPhoto.setVisible(false);
-        }
+        if (sidebarPhoto != null) sidebarPhoto.setVisible(false);
         avatarInitial.setVisible(true);
     }
 
-    @FXML
-    private void showDiscover() {
-        navigate("/fxml/discover.fxml", btnDiscover);
-    }
-
-    @FXML
-    private void showMatches() {
-        navigate("/fxml/matches.fxml", btnMatches);
-    }
-
-    @FXML
-    private void showMessages() {
-        navigate("/fxml/messages.fxml", btnMessages);
-    }
-
-    @FXML
-    private void showProfile() {
-        navigate("/fxml/profile.fxml", btnProfile);
-    }
-
-    @FXML
-    private void showSettings() {
-        navigate("/fxml/settings.fxml", btnSettings);
-    }
+    @FXML private void showDiscover() { navigate("/fxml/discover.fxml", btnDiscover); }
+    @FXML private void showMatches() { navigate("/fxml/matches.fxml", btnMatches); }
+    @FXML private void showMessages() { navigate("/fxml/messages.fxml", btnMessages); }
+    @FXML private void showProfile() { navigate("/fxml/profile.fxml", btnProfile); }
+    @FXML private void showSettings() { navigate("/fxml/settings.fxml", btnSettings); }
 
     private void navigate(String fxmlPath, Button clicked) {
         try {
-            if (activeButton != null) {
+            if (activeButton != null)
                 activeButton.getStyleClass().remove("nav-item-active");
-            }
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             loader.setControllerFactory(SpringFxmlContext::getBean);
             Node content = loader.load();
             contentArea.getChildren().setAll(content);
             clicked.getStyleClass().add("nav-item-active");
             activeButton = clicked;
-
-            // Застосовуємо тему ПІСЛЯ того як content доданий
             Platform.runLater(() -> {
                 Scene scene = contentArea.getScene();
-                if (scene != null) {
-                    ThemeManager.setMainScene(scene); // ← замість дублюючого коду
-                }
+                if (scene != null) ThemeManager.setMainScene(scene);
             });
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -148,10 +131,11 @@ public class MainController {
         loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
         Scene loginScene = new Scene(root, 900, 650);
-        ThemeManager.setMainScene(loginScene); // ← додай цей рядок
+        ThemeManager.setMainScene(loginScene);
         stage.setScene(loginScene);
-        stage.setTitle("HeartSync — Вхід");
+        stage.setTitle("HeartSync — " + LanguageManager.get("login.title"));
     }
+
     @FXML
     private void handleExit() {
         Platform.exit();

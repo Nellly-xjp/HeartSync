@@ -6,10 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
 <ScrollPane fitToWidth="true"
@@ -21,66 +18,77 @@
   <VBox spacing="24" styleClass="pane-root"
     style="-fx-padding: 0 0 24 0;">
 
-    <Label styleClass="label-title" text="Налаштування"/>
+    <Label styleClass="label-title" fx:id="labelSettingsTitle"/>
     <Label wrapText="true" fx:id="settingsStatus"/>
 
-    <!-- Тема оформлення -->
+    <!-- Тема -->
     <VBox spacing="16" styleClass="card">
       <Label style="-fx-padding: 0;" styleClass="settings-section-title"
-        text="ТЕМА ОФОРМЛЕННЯ"/>
+        fx:id="labelThemeSection"/>
       <HBox alignment="CENTER_LEFT" spacing="12">
         <Button onAction="#setLightTheme" styleClass="btn-secondary"
-          text="Світла" fx:id="btnLightTheme"/>
+          fx:id="btnLightTheme"/>
         <Button onAction="#setDarkTheme" styleClass="btn-secondary"
-          text="Темна" fx:id="btnDarkTheme"/>
+          fx:id="btnDarkTheme"/>
       </HBox>
       <Label style="-fx-font-size: 11px;" styleClass="label-muted" fx:id="themeStatus"/>
+    </VBox>
+
+    <!-- Мова -->
+    <VBox spacing="16" styleClass="card">
+      <Label style="-fx-padding: 0;" styleClass="settings-section-title"
+        fx:id="labelLangSection"/>
+      <HBox alignment="CENTER_LEFT" spacing="12">
+        <Button onAction="#setLangUk" styleClass="btn-secondary"
+          fx:id="btnLangUk"/>
+        <Button onAction="#setLangEn" styleClass="btn-secondary"
+          fx:id="btnLangEn"/>
+      </HBox>
     </VBox>
 
     <!-- Уподобання -->
     <VBox spacing="16" styleClass="card">
       <Label style="-fx-padding: 0;" styleClass="settings-section-title"
-        text="УПОДОБАННЯ ПОШУКУ"/>
-
+        fx:id="labelPrefsSection"/>
       <HBox spacing="16">
         <VBox spacing="4" HBox.hgrow="ALWAYS">
-          <Label styleClass="field-label" text="СТАТЬ"/>
+          <Label styleClass="field-label" fx:id="labelGender"/>
           <ComboBox fx:id="prefGender" maxWidth="Infinity"/>
         </VBox>
         <VBox spacing="4" HBox.hgrow="ALWAYS">
-          <Label styleClass="field-label" text="ВІК ВІД"/>
+          <Label styleClass="field-label" fx:id="labelAgeFrom"/>
           <TextField promptText="18" fx:id="prefMinAge" maxWidth="Infinity"/>
         </VBox>
         <VBox spacing="4" HBox.hgrow="ALWAYS">
-          <Label styleClass="field-label" text="ВІК ДО"/>
+          <Label styleClass="field-label" fx:id="labelAgeTo"/>
           <TextField promptText="60" fx:id="prefMaxAge" maxWidth="Infinity"/>
         </VBox>
       </HBox>
-
       <VBox spacing="4">
-        <Label styleClass="field-label" text="МІСТО"/>
+        <Label styleClass="field-label" fx:id="labelCity"/>
         <TextField maxWidth="Infinity" promptText="Будь-яке місто" fx:id="prefCity"/>
       </VBox>
-
       <Button onAction="#savePreferences" styleClass="btn-primary"
-        text="Зберегти уподобання"/>
+        fx:id="btnSavePrefs"/>
     </VBox>
 
     <!-- Сповіщення -->
     <VBox spacing="16" styleClass="card">
       <Label style="-fx-padding: 0;" styleClass="settings-section-title"
-        text="СПОВІЩЕННЯ"/>
-      <CheckBox text="Нові повідомлення" fx:id="notifyMessages"/>
-      <CheckBox text="Нові збіги" fx:id="notifyMatches"/>
-      <Button onAction="#savePrivacy" styleClass="btn-secondary" text="Зберегти"/>
+        fx:id="labelNotifications"/>
+      <CheckBox fx:id="checkNotifyMessages"/>
+      <CheckBox fx:id="checkNotifyMatches"/>
+      <Button onAction="#savePrivacy" styleClass="btn-secondary"
+        fx:id="btnSaveNotifications"/>
     </VBox>
 
     <!-- Небезпечна зона -->
     <VBox spacing="12" styleClass="card">
       <Label style="-fx-padding: 0; -fx-text-fill: #C44569;"
-        styleClass="settings-section-title" text="НЕБЕЗПЕЧНА ЗОНА"/>
-      <Label styleClass="label-muted" text="Видалення акаунту — незворотня дія"/>
-      <Button onAction="#deleteAccount" styleClass="btn-danger" text="Видалити акаунт"/>
+        styleClass="settings-section-title" fx:id="labelDanger"/>
+      <Label styleClass="label-muted" fx:id="labelDeleteWarning"/>
+      <Button onAction="#deleteAccount" styleClass="btn-danger"
+        fx:id="btnDeleteAccount"/>
     </VBox>
 
   </VBox>

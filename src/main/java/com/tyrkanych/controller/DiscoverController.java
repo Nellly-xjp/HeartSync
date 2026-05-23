@@ -1,5 +1,6 @@
 package com.tyrkanych.controller;
 
+import com.tyrkanych.config.LanguageManager;
 import com.tyrkanych.dao.impl.UserDaoImpl;
 import com.tyrkanych.entity.User;
 import com.tyrkanych.service.LikeService;
@@ -58,32 +59,42 @@ public class DiscoverController {
 
     @FXML
     public void initialize() {
-        genderFilter.getItems().addAll("Всі", "male", "female", "other");
-        genderFilter.setValue("Всі");
+        applyLanguage();
+        LanguageManager.addListener(this::applyLanguage);
 
-        // Показуємо заглушку поки завантажується
-        cardName.setText("Завантаження...");
-        cardBio.setText("Зачекайте");
+        // завантаження фільтрів
+        genderFilter.getItems().addAll(
+                LanguageManager.get("discover.filter.gender").equals("Gender")
+                        ? new String[]{"All", "male", "female", "other"}
+                        : new String[]{"Всі", "male", "female", "other"}
+        );
+        genderFilter.setValue(genderFilter.getItems().get(0));
+
+        cardName.setText(LanguageManager.get("discover.loading"));
+        cardBio.setText("");
         profileEmoji.setText("⏳");
         profileEmoji.setVisible(true);
         if (cardPhoto != null) cardPhoto.setVisible(false);
 
-        // Завантажуємо з БД у фоновому потоці — не блокуємо UI
         new Thread(() -> {
-            try {
-                loadCandidatesData();
-            } catch (Exception e) {
+            try { loadCandidatesData(); }
+            catch (Exception e) {
                 javafx.application.Platform.runLater(() -> {
-                    cardName.setText("Помилка з'єднання");
-                    cardBio.setText("Перевірте інтернет та перезапустіть");
-                    if (cardPhoto != null) cardPhoto.setVisible(false);
-                    profileEmoji.setVisible(true);
+                    cardName.setText(LanguageManager.get("discover.error"));
+                    cardBio.setText("");
                     profileEmoji.setText("⚠️");
+                    profileEmoji.setVisible(true);
+                    if (cardPhoto != null) cardPhoto.setVisible(false);
                 });
             }
         }).start();
     }
 
+    private void applyLanguage() {
+        if (minAge != null) minAge.setPromptText(LanguageManager.get("discover.filter.age.from"));
+        if (maxAge != null) maxAge.setPromptText(LanguageManager.get("discover.filter.age.to"));
+        if (genderFilter != null) genderFilter.setPromptText(LanguageManager.get("discover.filter.gender"));
+    }
     private void loadCandidatesData() {
         Long myId = sessionManager.getCurrentUserId();
         User me = userDao.findById(myId).orElse(null);

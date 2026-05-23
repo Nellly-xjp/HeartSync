@@ -1,5 +1,6 @@
 package com.tyrkanych.controller;
 
+import com.tyrkanych.config.LanguageManager;
 import com.tyrkanych.dao.impl.UserDaoImpl;
 import com.tyrkanych.entity.Message;
 import com.tyrkanych.entity.User;
@@ -76,6 +77,12 @@ public class MessagesController {
                 filterChats(myId, val);
             });
         }
+    }
+    private void applyLanguage() {
+        if (chatSearch != null)
+            chatSearch.setPromptText(LanguageManager.get("messages.search"));
+        if (messageInput != null)
+            messageInput.setPromptText(LanguageManager.get("messages.input"));
     }
 
     public void loadChatList(Long myId) {

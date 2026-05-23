@@ -1,5 +1,6 @@
 package com.tyrkanych.controller;
 
+import com.tyrkanych.config.LanguageManager;
 import com.tyrkanych.dao.impl.UserDaoImpl;
 import com.tyrkanych.entity.Match;
 import com.tyrkanych.entity.User;
@@ -69,7 +70,10 @@ public class MatchesController {
 
         searchField.textProperty().addListener((obs, old, val) -> filterMatches(val));
     }
-
+    private void applyLanguage() {
+        if (searchField != null)
+            searchField.setPromptText(LanguageManager.get("messages.search"));
+    }
     private void loadMatches() {
         Long myId = sessionManager.getCurrentUserId();
         if (myId == null) return;

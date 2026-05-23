@@ -1,5 +1,6 @@
 package com.tyrkanych.controller;
 
+import com.tyrkanych.config.LanguageManager;
 import com.tyrkanych.dto.UserDto;
 import com.tyrkanych.service.UserService;
 import com.tyrkanych.session.SessionManager;
@@ -20,18 +21,45 @@ public class LoginController {
 
     private final UserService userService;
     private final SessionManager sessionManager;
-    @FXML
-    private TextField emailField;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private Label statusLabel;
+
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
+    @FXML private Label statusLabel;
+    @FXML private Label labelTitle;
+    @FXML private Label labelSubtitle;
+    @FXML private Label labelEmail;
+    @FXML private Label labelPassword;
+    @FXML private javafx.scene.control.Button btnLogin;
+    @FXML private Label labelNoAccount;
+    @FXML private Label labelRegister;
 
     @Autowired
-    public LoginController(UserService userService,
-            SessionManager sessionManager) {
+    public LoginController(UserService userService, SessionManager sessionManager) {
         this.userService = userService;
         this.sessionManager = sessionManager;
+    }
+
+    @FXML
+    public void initialize() {
+        applyLanguage();
+        LanguageManager.addListener(this::applyLanguage);
+    }
+
+    private void applyLanguage() {
+        if (labelTitle != null)
+            labelTitle.setText(LanguageManager.get("login.title"));
+        if (labelSubtitle != null)
+            labelSubtitle.setText(LanguageManager.get("login.subtitle"));
+        if (labelEmail != null)
+            labelEmail.setText(LanguageManager.get("login.email"));
+        if (labelPassword != null)
+            labelPassword.setText(LanguageManager.get("login.password"));
+        if (btnLogin != null)
+            btnLogin.setText(LanguageManager.get("login.btn"));
+        if (labelNoAccount != null)
+            labelNoAccount.setText(LanguageManager.get("login.no.account"));
+        if (labelRegister != null)
+            labelRegister.setText(LanguageManager.get("login.register"));
     }
 
     @FXML
@@ -40,15 +68,14 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (email.isEmpty() || password.isEmpty()) {
-            setStatus("❌ Заповніть всі поля", "status-error");
+            setStatus("❌ " + LanguageManager.get("login.email") + " / "
+                    + LanguageManager.get("login.password"), "status-error");
             return;
         }
-
         if (!email.matches("^[\\w.+\\-]+@[\\w\\-]+\\.[a-zA-Z]{2,}$")) {
             setStatus("❌ Невірний формат email", "status-error");
             return;
         }
-
         try {
             UserDto user = userService.findByEmailAndPassword(email, password).orElse(null);
             if (user == null) {
@@ -65,20 +92,19 @@ public class LoginController {
     @FXML
     private void goToRegistration() throws IOException {
         Stage stage = (Stage) emailField.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/registration.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/fxml/registration.fxml"));
         loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
         stage.setScene(new Scene(root, 900, 700));
-        stage.setTitle("HeartSync — Реєстрація");
+        stage.setTitle("HeartSync — " + LanguageManager.get("register.title"));
     }
 
     private void openMainWindow() throws IOException {
         Stage stage = (Stage) emailField.getScene().getWindow();
-        FXMLLoader loader =
-                new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-        // Передаємо Spring factory щоб контролери отримали DI
-        loader.setControllerFactory(
-                clazz -> SpringFxmlContext.getBean(clazz));
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/fxml/main.fxml"));
+        loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
         stage.setScene(new Scene(root, 1100, 700));
         stage.setTitle("HeartSync");
