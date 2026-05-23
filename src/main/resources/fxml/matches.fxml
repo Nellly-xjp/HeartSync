@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.VBox?>
 
 <HBox spacing="24" styleClass="pane-root"
-  stylesheets="@../styles/styles.css"
   xmlns="http://javafx.com/javafx/21"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="com.tyrkanych.controller.MatchesController">

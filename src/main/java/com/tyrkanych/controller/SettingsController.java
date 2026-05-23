@@ -80,23 +80,10 @@ public class SettingsController {
 
     private void applyTheme(String cssPath, String statusText) {
         try {
-            // Беремо головне вікно
-            Stage stage = (Stage) prefGender.getScene().getWindow();
-            Scene scene = stage.getScene();
-
-            String cssUrl = getClass().getResource(cssPath).toExternalForm();
-
-            // Очищаємо і додаємо нову тему
-            scene.getStylesheets().clear();
-            scene.getStylesheets().add(cssUrl);
-
-            // Зберігаємо вибір
             ThemeManager.setCurrentTheme(cssPath);
-
             themeStatus.setText(statusText);
             themeStatus.getStyleClass().removeAll("status-error");
             themeStatus.getStyleClass().add("status-success");
-
         } catch (Exception e) {
             themeStatus.setText("❌ Помилка: " + e.getMessage());
         }

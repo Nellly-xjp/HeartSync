@@ -11,60 +11,42 @@
 <?import javafx.scene.layout.Region?>
 
 <HBox spacing="0" styleClass="pane-root"
-  stylesheets="@../styles/styles.css"
   xmlns="http://javafx.com/javafx/21"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="com.tyrkanych.controller.MessagesController">
 
   <!-- Ліва панель — список чатів -->
-  <VBox prefWidth="270" spacing="12"
-    style="-fx-padding: 0 0 0 0; -fx-border-color: #EDE8F5;
-               -fx-border-width: 0 1 0 0;">
+  <VBox prefWidth="270" spacing="12" styleClass="chat-sidebar">
 
     <Label styleClass="label-title"
       style="-fx-padding: 0 16 8 16;" text="Повідомлення"/>
 
     <TextField fx:id="chatSearch" promptText="🔍  Пошук"
-      style="-fx-margin: 0 16 0 16; -fx-background-radius: 20;
-                      -fx-padding: 8 16; -fx-font-size: 13px;"
+      style="-fx-margin: 0 16 0 16;"
       VBox.vgrow="NEVER"/>
 
-    <ListView fx:id="chatList" VBox.vgrow="ALWAYS"
-      style="-fx-background-color: transparent;
-                     -fx-border-color: transparent;"/>
+    <ListView fx:id="chatList" VBox.vgrow="ALWAYS"/>
   </VBox>
 
   <!-- Права панель — чат -->
   <VBox HBox.hgrow="ALWAYS" spacing="0">
 
     <!-- Хедер чату -->
-    <HBox alignment="CENTER_LEFT" spacing="14"
-      style="-fx-padding: 16 20; -fx-background-color: white;
-                 -fx-border-color: #EDE8F5; -fx-border-width: 0 0 1 0;">
-      <StackPane alignment="CENTER"
-        style="-fx-background-color: #C4B4E8; -fx-background-radius: 50;
-               -fx-min-width: 42; -fx-min-height: 42;
-               -fx-max-width: 42; -fx-max-height: 42;">
-        <Label fx:id="chatInitial"
-          style="-fx-font-size: 16px; -fx-font-weight: bold;
-                 -fx-text-fill: white;"/>
+    <HBox alignment="CENTER_LEFT" spacing="14" styleClass="chat-header">
+      <StackPane alignment="CENTER" styleClass="avatar-circle">
+        <Label fx:id="chatInitial" styleClass="avatar-initial"/>
       </StackPane>
       <VBox spacing="2">
-        <Label fx:id="chatPartnerName"
-          style="-fx-font-weight: bold; -fx-font-size: 15px;
-                      -fx-text-fill: #2D2550;"/>
-        <Label fx:id="chatPartnerStatus"
-          style="-fx-font-size: 11px; -fx-text-fill: #7C5CBF;"/>
+        <Label fx:id="chatPartnerName" styleClass="chat-partner-name"/>
+        <Label fx:id="chatPartnerStatus" styleClass="label-muted"/>
       </VBox>
     </HBox>
 
     <!-- Область повідомлень -->
     <ScrollPane fx:id="chatScrollPane" VBox.vgrow="ALWAYS"
-      fitToWidth="true"
-      style="-fx-background-color: #F8F5FF;
-                       -fx-border-color: transparent;">
+      fitToWidth="true" styleClass="chat-scroll">
       <VBox fx:id="messagesContainer" spacing="8"
-        style="-fx-padding: 20; -fx-background-color: #F8F5FF;">
+        styleClass="chat-messages-container">
         <Label styleClass="label-muted"
           text="Виберіть чат щоб почати спілкування ✦"
           style="-fx-padding: 40 0;" maxWidth="Infinity"/>
@@ -72,14 +54,9 @@
     </ScrollPane>
 
     <!-- Поле вводу -->
-    <HBox alignment="CENTER" spacing="10"
-      style="-fx-padding: 12 16; -fx-background-color: white;
-                 -fx-border-color: #EDE8F5; -fx-border-width: 1 0 0 0;">
+    <HBox alignment="CENTER" spacing="10" styleClass="chat-input-area">
       <TextField fx:id="messageInput" HBox.hgrow="ALWAYS"
         promptText="Написати повідомлення..."
-        style="-fx-background-radius: 22; -fx-padding: 10 18;
-               -fx-font-size: 13px; -fx-background-color: #F0EAF8;
-               -fx-border-color: transparent;"
         onAction="#sendMessage"/>
       <Button text="→" styleClass="btn-primary" onAction="#sendMessage"
         style="-fx-font-size: 18px; -fx-min-width: 44; -fx-min-height: 44;

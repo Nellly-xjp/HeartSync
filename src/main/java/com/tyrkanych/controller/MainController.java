@@ -1,5 +1,6 @@
 package com.tyrkanych.controller;
 
+import com.tyrkanych.config.ThemeManager;
 import com.tyrkanych.session.SessionManager;
 import com.tyrkanych.viewmodel.UserViewModel;
 import java.io.File;
@@ -43,6 +44,7 @@ public class MainController {
         this.sessionManager = sessionManager;
     }
 
+
     @FXML
     public void initialize() {
         UserViewModel vm = sessionManager.getViewModel();
@@ -51,13 +53,21 @@ public class MainController {
         avatarInitial.textProperty().bind(vm.initialProperty());
 
         loadSidebarPhoto(vm.getPhotoPath());
-
         vm.photoPathProperty().addListener((obs, oldVal, newVal) -> {
             loadSidebarPhoto(newVal);
         });
 
         activeButton = btnDiscover;
         showDiscover();
+
+        Platform.runLater(() -> {
+            Scene scene = contentArea.getScene();
+            System.out.println("Scene: " + scene); // ← додай
+            System.out.println("Scenes count: " + scene); // ← додай
+            if (scene != null) {
+                ThemeManager.setMainScene(scene);
+            }
+        });
     }
 
     private void loadSidebarPhoto(String photoPath) {
@@ -109,13 +119,21 @@ public class MainController {
             if (activeButton != null) {
                 activeButton.getStyleClass().remove("nav-item-active");
             }
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             loader.setControllerFactory(SpringFxmlContext::getBean);
             Node content = loader.load();
             contentArea.getChildren().setAll(content);
             clicked.getStyleClass().add("nav-item-active");
             activeButton = clicked;
+
+            // Застосовуємо тему ПІСЛЯ того як content доданий
+            Platform.runLater(() -> {
+                Scene scene = contentArea.getScene();
+                if (scene != null) {
+                    ThemeManager.setMainScene(scene); // ← замість дублюючого коду
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -129,10 +147,11 @@ public class MainController {
                 getClass().getResource("/fxml/login.fxml"));
         loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
-        stage.setScene(new Scene(root, 900, 650));
+        Scene loginScene = new Scene(root, 900, 650);
+        ThemeManager.setMainScene(loginScene); // ← додай цей рядок
+        stage.setScene(loginScene);
         stage.setTitle("HeartSync — Вхід");
     }
-
     @FXML
     private void handleExit() {
         Platform.exit();

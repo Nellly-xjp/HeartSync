@@ -1,0 +1,249 @@
+/* =====================================================
+   HeartSync — Темна тема
+   ===================================================== */
+
+.root {
+    -fx-font-family: 'Segoe UI', 'Georgia', sans-serif;
+    -fx-background-color: #1A1625;
+    -fx-font-size: 13px;
+}
+
+.pane-root     { -fx-background-color: #1A1625; }
+.pane-sidebar  {
+    -fx-background-color: #221D30;
+    -fx-border-color: #2D2550;
+    -fx-border-width: 0 1 0 0;
+    -fx-min-width: 230px;
+    -fx-max-width: 230px;
+}
+.pane-content  { -fx-background-color: #1A1625; -fx-padding: 32; }
+
+.card {
+    -fx-background-color: #221D30;
+    -fx-background-radius: 20;
+    -fx-border-color: #2D2550;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, #00000060, 16, 0, 0, 4);
+}
+.card:hover { -fx-background-color: #261F38; -fx-border-color: #7C5CBF; }
+
+.label          { -fx-text-fill: #E8E3F5; }
+.label-muted    { -fx-text-fill: #6B6390; -fx-font-size: 12px; }
+.label-title    { -fx-text-fill: #E8E3F5; -fx-font-size: 24px; -fx-font-weight: bold; }
+.label-subtitle { -fx-text-fill: #9B93C0; -fx-font-size: 13px; }
+.field-label    { -fx-text-fill: #9B93C0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 0 0 4 2; }
+
+.btn-primary {
+    -fx-background-color: #7C5CBF;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 14;
+    -fx-cursor: hand;
+    -fx-padding: 13 32;
+}
+.btn-primary:hover { -fx-background-color: #9B7DD4; }
+
+.btn-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: #C4B4E8;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 14;
+    -fx-border-color: #4A3D6B;
+    -fx-border-radius: 14;
+    -fx-border-width: 1.5;
+    -fx-cursor: hand;
+    -fx-padding: 12 30;
+}
+.btn-secondary:hover { -fx-background-color: #2D2550; -fx-border-color: #7C5CBF; }
+
+.btn-ghost {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6B6390;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+    -fx-background-radius: 10;
+}
+.btn-ghost:hover { -fx-background-color: #2D2550; -fx-text-fill: #C4B4E8; }
+
+.btn-danger {
+    -fx-background-color: #3D1525;
+    -fx-text-fill: #F08090;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-color: #6B2540;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-padding: 10 22;
+}
+.btn-danger:hover { -fx-background-color: #4D1A30; }
+
+.text-field, .password-field, .text-area, .combo-box, .date-picker {
+    -fx-background-color: #2A2040;
+    -fx-text-fill: #E8E3F5;
+    -fx-prompt-text-fill: #4A4070;
+    -fx-border-color: #3D3060;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-border-width: 1.5;
+    -fx-padding: 11 16;
+    -fx-font-size: 13px;
+}
+.text-field:focused, .password-field:focused, .text-area:focused {
+    -fx-border-color: #7C5CBF;
+    -fx-background-color: #2D2550;
+}
+.text-area .content { -fx-background-color: #2A2040; }
+
+.nav-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6B6390;
+    -fx-font-size: 14px;
+    -fx-alignment: center-left;
+    -fx-padding: 13 22;
+    -fx-background-radius: 14;
+    -fx-cursor: hand;
+}
+.nav-item:hover { -fx-background-color: #2D2550; -fx-text-fill: #C4B4E8; }
+.nav-item-active {
+    -fx-background-color: #2D2550;
+    -fx-text-fill: #C4B4E8;
+    -fx-font-weight: bold;
+    -fx-border-color: #7C5CBF;
+    -fx-border-width: 0 0 0 3;
+}
+
+.scroll-bar { -fx-background-color: transparent; }
+.scroll-bar .track  { -fx-background-color: #2A2040; -fx-background-radius: 4; }
+.scroll-bar .thumb  { -fx-background-color: #4A3D6B; -fx-background-radius: 4; }
+.scroll-bar .thumb:hover { -fx-background-color: #7C5CBF; }
+.scroll-bar .increment-button, .scroll-bar .decrement-button { -fx-background-color: transparent; -fx-padding: 0; }
+
+.list-view { -fx-background-color: #221D30; -fx-border-color: #2D2550; -fx-border-radius: 14; -fx-background-radius: 14; }
+.list-cell { -fx-background-color: transparent; -fx-text-fill: #E8E3F5; -fx-padding: 10 16; }
+.list-cell:hover { -fx-background-color: #2D2550; }
+.list-cell:selected { -fx-background-color: #3D3060; -fx-text-fill: #C4B4E8; }
+
+.badge { -fx-background-color: #2D2550; -fx-text-fill: #C4B4E8; -fx-background-radius: 20; -fx-border-color: #4A3D6B; -fx-border-radius: 20; -fx-border-width: 1; -fx-padding: 3 12; -fx-font-size: 11px; -fx-font-weight: bold; }
+.badge-pink  { -fx-background-color: #3D1525; -fx-text-fill: #F08090; -fx-border-color: #6B2540; }
+.badge-green { -fx-background-color: #1A3D2B; -fx-text-fill: #5DC888; -fx-border-color: #2D6B4A; }
+
+.progress-bar { -fx-background-color: #2D2550; -fx-background-radius: 8; -fx-pref-height: 8; }
+.progress-bar .bar { -fx-background-color: #7C5CBF; -fx-background-radius: 8; -fx-background-insets: 0; }
+.progress-bar .track { -fx-background-color: #2D2550; -fx-background-radius: 8; -fx-background-insets: 0; }
+
+.login-pane { -fx-background-color: #1A1625; }
+.login-card {
+    -fx-background-color: #221D30;
+    -fx-background-radius: 28;
+    -fx-border-color: #2D2550;
+    -fx-border-radius: 28;
+    -fx-border-width: 1;
+    -fx-padding: 48;
+    -fx-max-width: 460;
+    -fx-min-width: 460;
+}
+.login-logo       { -fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #E8E3F5; }
+.login-logo-heart { -fx-font-size: 32px; -fx-text-fill: #C44569; }
+.login-divider    { -fx-text-fill: #4A4070; -fx-font-size: 12px; }
+
+.match-card {
+    -fx-background-color: #221D30;
+    -fx-background-radius: 28;
+    -fx-border-color: #2D2550;
+    -fx-border-radius: 28;
+    -fx-border-width: 1;
+    -fx-min-width: 360;
+    -fx-max-width: 360;
+    -fx-min-height: 500;
+    -fx-effect: dropshadow(gaussian, #00000080, 24, 0, 0, 8);
+}
+.match-card-name { -fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #E8E3F5; }
+.match-card-city { -fx-font-size: 13px; -fx-text-fill: #6B6390; }
+
+.avatar-circle { -fx-background-color: #4A3D6B; -fx-background-radius: 50; -fx-min-width: 56; -fx-min-height: 56; -fx-max-width: 56; -fx-max-height: 56; }
+.avatar-initial { -fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white; }
+
+.chat-bubble-out { -fx-background-color: #7C5CBF; -fx-background-radius: 18 18 4 18; -fx-padding: 11 18; -fx-text-fill: white; -fx-max-width: 320; }
+.chat-bubble-in { -fx-background-color: #2A2040; -fx-background-radius: 18 18 18 4; -fx-border-color: #3D3060; -fx-border-radius: 18 18 18 4; -fx-border-width: 1; -fx-padding: 11 18; -fx-text-fill: #E8E3F5; -fx-max-width: 320; }
+.chat-input-area { -fx-background-color: #221D30; -fx-border-color: #2D2550; -fx-border-width: 1 0 0 0; -fx-padding: 14; }
+
+.status-success { -fx-text-fill: #5DC888; -fx-font-size: 12px; }
+.status-error   { -fx-text-fill: #F08090; -fx-font-size: 12px; }
+.status-info    { -fx-text-fill: #C4B4E8; -fx-font-size: 12px; }
+
+.settings-section-title { -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #4A4070; -fx-padding: 16 0 8 4; }
+.separator .line { -fx-border-color: #2D2550; -fx-border-width: 1; }
+
+.check-box .box { -fx-background-color: #2A2040; -fx-border-color: #4A3D6B; -fx-border-radius: 6; -fx-background-radius: 6; }
+.check-box:selected .box { -fx-background-color: #7C5CBF; -fx-border-color: #7C5CBF; }
+.check-box .mark { -fx-background-color: white; }
+.check-box .text { -fx-text-fill: #E8E3F5; }
+
+.interest-tag { -fx-background-color: #2D2550; -fx-text-fill: #C4B4E8; -fx-background-radius: 20; -fx-border-color: #4A3D6B; -fx-border-radius: 20; -fx-border-width: 1; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand; }
+.interest-tag:hover { -fx-background-color: #3D3060; -fx-border-color: #7C5CBF; }
+.interest-tag-active { -fx-background-color: #7C5CBF; -fx-text-fill: white; -fx-border-color: #7C5CBF; }
+/* =====================================================
+   Чат — перекриття хардкодених стилів
+   ===================================================== */
+
+/* Хедер чату */
+.pane-root > .hbox > .vbox > .hbox {
+    -fx-background-color: #221D30 !important;
+    -fx-border-color: #2D2550 !important;
+}
+
+/* Область повідомлень */
+.scroll-pane {
+    -fx-background: #1A1625;
+    -fx-background-color: #1A1625;
+}
+.scroll-pane .viewport {
+    -fx-background-color: #1A1625;
+}
+.scroll-pane > .viewport > .vbox {
+    -fx-background-color: #1A1625;
+}
+
+/* Поле вводу повідомлення */
+.pane-root > .hbox > .vbox > .hbox:last-child {
+    -fx-background-color: #221D30 !important;
+    -fx-border-color: #2D2550 !important;
+}.chat-sidebar {
+     -fx-background-color: #221D30;
+     -fx-border-color: #2D2550;
+     -fx-border-width: 0 1 0 0;
+     -fx-padding: 16 0 0 0;
+ }
+ .chat-header {
+     -fx-padding: 16 20;
+     -fx-background-color: #221D30;
+     -fx-border-color: #2D2550;
+     -fx-border-width: 0 0 1 0;
+ }
+ .chat-scroll {
+     -fx-background: #1A1625;
+     -fx-background-color: #1A1625;
+     -fx-border-color: transparent;
+ }
+ .chat-messages-container {
+     -fx-padding: 20;
+     -fx-background-color: #1A1625;
+ }
+ .chat-input-area {
+     -fx-padding: 12 16;
+     -fx-background-color: #221D30;
+     -fx-border-color: #2D2550;
+     -fx-border-width: 1 0 0 0;
+ }
+ .chat-partner-name {
+     -fx-font-weight: bold;
+     -fx-font-size: 15px;
+     -fx-text-fill: #E8E3F5;
+ }

@@ -60,10 +60,31 @@ public class DiscoverController {
     public void initialize() {
         genderFilter.getItems().addAll("Всі", "male", "female", "other");
         genderFilter.setValue("Всі");
-        loadCandidates();
+
+        // Показуємо заглушку поки завантажується
+        cardName.setText("Завантаження...");
+        cardBio.setText("Зачекайте");
+        profileEmoji.setText("⏳");
+        profileEmoji.setVisible(true);
+        if (cardPhoto != null) cardPhoto.setVisible(false);
+
+        // Завантажуємо з БД у фоновому потоці — не блокуємо UI
+        new Thread(() -> {
+            try {
+                loadCandidatesData();
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    cardName.setText("Помилка з'єднання");
+                    cardBio.setText("Перевірте інтернет та перезапустіть");
+                    if (cardPhoto != null) cardPhoto.setVisible(false);
+                    profileEmoji.setVisible(true);
+                    profileEmoji.setText("⚠️");
+                });
+            }
+        }).start();
     }
 
-    private void loadCandidates() {
+    private void loadCandidatesData() {
         Long myId = sessionManager.getCurrentUserId();
         User me = userDao.findById(myId).orElse(null);
         String myCity = me != null && me.getCity() != null
@@ -71,17 +92,29 @@ public class DiscoverController {
 
         List<User> all = userDao.findAll().stream()
                 .filter(u -> !u.getId().equals(myId))
-                // Фільтр по місту — тільки з мого міста
                 .filter(u -> myCity.isEmpty() ||
                         (u.getCity() != null &&
                                 u.getCity().toLowerCase().trim().equals(myCity)))
-                // Виключаємо вже лайкнутих
                 .filter(u -> !likeService.existsLike(myId, u.getId()))
                 .toList();
 
-        candidates.setAll(all);
-        currentIndex = 0;
-        showCurrentCard();
+        // Оновлюємо UI тільки з JavaFX thread
+        javafx.application.Platform.runLater(() -> {
+            candidates.setAll(all);
+            currentIndex = 0;
+            showCurrentCard();
+        });
+    }
+
+    private void loadCandidates() {
+        new Thread(() -> {
+            try {
+                loadCandidatesData();
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() ->
+                        cardName.setText("Помилка завантаження"));
+            }
+        }).start();
     }
 
     private void showCurrentCard() {
@@ -131,34 +164,39 @@ public class DiscoverController {
 
     @FXML
     private void applyFilters() {
-        Long myId = sessionManager.getCurrentUserId();
-        User me = userDao.findById(myId).orElse(null);
-        String myCity = me != null && me.getCity() != null
-                ? me.getCity().toLowerCase().trim() : "";
+        new Thread(() -> {
+            try {
+                Long myId = sessionManager.getCurrentUserId();
+                User me = userDao.findById(myId).orElse(null);
+                String myCity = me != null && me.getCity() != null
+                        ? me.getCity().toLowerCase().trim() : "";
 
-        String gender = genderFilter.getValue();
-        int min = parseIntOrDefault(minAge.getText(), 18);
-        int max = parseIntOrDefault(maxAge.getText(), 99);
+                String gender = genderFilter.getValue();
+                int min = parseIntOrDefault(minAge.getText(), 18);
+                int max = parseIntOrDefault(maxAge.getText(), 99);
 
-        List<User> filtered = userDao.findAll().stream()
-                .filter(u -> !u.getId().equals(myId))
-                // Місто завжди фільтруємо по місту поточного користувача
-                .filter(u -> myCity.isEmpty() ||
-                        (u.getCity() != null &&
-                                u.getCity().toLowerCase().trim().equals(myCity)))
-                // Виключаємо вже лайкнутих
-                .filter(u -> !likeService.existsLike(myId, u.getId()))
-                // Фільтр за статтю
-                .filter(u -> gender == null || gender.equals("Всі") ||
-                        gender.equals(u.getGender()))
-                // Фільтр за віком
-                .filter(u -> u.getAge() == null ||
-                        (u.getAge() >= min && u.getAge() <= max))
-                .toList();
+                List<User> filtered = userDao.findAll().stream()
+                        .filter(u -> !u.getId().equals(myId))
+                        .filter(u -> myCity.isEmpty() ||
+                                (u.getCity() != null &&
+                                        u.getCity().toLowerCase().trim().equals(myCity)))
+                        .filter(u -> !likeService.existsLike(myId, u.getId()))
+                        .filter(u -> gender == null || gender.equals("Всі") ||
+                                gender.equals(u.getGender()))
+                        .filter(u -> u.getAge() == null ||
+                                (u.getAge() >= min && u.getAge() <= max))
+                        .toList();
 
-        candidates.setAll(filtered);
-        currentIndex = 0;
-        showCurrentCard();
+                javafx.application.Platform.runLater(() -> {
+                    candidates.setAll(filtered);
+                    currentIndex = 0;
+                    showCurrentCard();
+                });
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() ->
+                        statusLabel.setText("Помилка фільтрації"));
+            }
+        }).start();
     }
 
     @FXML
@@ -172,8 +210,7 @@ public class DiscoverController {
             if (mutual) {
                 matchService.createMatch(myId, target.getId(), null);
                 statusLabel.setText("🎉 Збіг з " + target.getName() + "!");
-                statusLabel.setStyle(
-                        "-fx-text-fill: #C44569; -fx-font-weight: bold;");
+                statusLabel.setStyle("-fx-text-fill: #C44569; -fx-font-weight: bold;");
             } else {
                 statusLabel.setText("♥ Лайк!");
                 statusLabel.setStyle("-fx-text-fill: #7C5CBF;");
