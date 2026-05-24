@@ -29,6 +29,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import javafx.scene.control.Button;
 
 @Component
 public class ProfileController {
@@ -54,7 +55,19 @@ public class ProfileController {
     @FXML private Label statsLikes;
     @FXML private Label statsMatches;
     @FXML private Label statsMessages;
-
+    @FXML private Label labelEditTitle;
+    @FXML private Label labelNameField;
+    @FXML private Label labelCityField;
+    @FXML private Label labelBioField;
+    @FXML private Label labelStatsSection;
+    @FXML private Label labelLikes;
+    @FXML private Label labelMatches;
+    @FXML private Label labelChats;
+    @FXML private Button btnSave;
+    @FXML private Button btnReset;
+    @FXML private Button btnPhoto;
+    @FXML private Button btnPdf;
+    @FXML private Button btnExcel;
     @Autowired
     public ProfileController(SessionManager sessionManager,
             UserDaoImpl userDao,
@@ -70,6 +83,8 @@ public class ProfileController {
 
     @FXML
     public void initialize() {
+        applyLanguage();
+        LanguageManager.addListener(this::applyLanguage);
         UserViewModel vm = sessionManager.getViewModel();
 
         profileInitial.textProperty().bind(vm.initialProperty());
@@ -101,9 +116,19 @@ public class ProfileController {
         loadPhoto(vm.getPhotoPath());
     }
     private void applyLanguage() {
-        if (editName != null) editName.setPromptText(LanguageManager.get("profile.name"));
-        if (editCity != null) editCity.setPromptText(LanguageManager.get("profile.city"));
-        if (editBio != null) editBio.setPromptText(LanguageManager.get("profile.bio"));
+        if (labelEditTitle != null) labelEditTitle.setText(LanguageManager.get("profile.title"));
+        if (labelNameField != null) labelNameField.setText(LanguageManager.get("profile.name"));
+        if (labelCityField != null) labelCityField.setText(LanguageManager.get("profile.city"));
+        if (labelBioField != null) labelBioField.setText(LanguageManager.get("profile.bio"));
+        if (labelStatsSection != null) labelStatsSection.setText(LanguageManager.get("profile.stats"));
+        if (labelLikes != null) labelLikes.setText(LanguageManager.get("profile.likes"));
+        if (labelMatches != null) labelMatches.setText(LanguageManager.get("profile.matches"));
+        if (labelChats != null) labelChats.setText(LanguageManager.get("profile.chats"));
+        if (btnSave != null) btnSave.setText("✓  " + LanguageManager.get("profile.save"));
+        if (btnReset != null) btnReset.setText(LanguageManager.get("profile.reset"));
+        if (btnPhoto != null) btnPhoto.setText("📷  " + LanguageManager.get("profile.photo"));
+        if (btnPdf != null) btnPdf.setText(LanguageManager.get("profile.pdf"));
+        if (btnExcel != null) btnExcel.setText(LanguageManager.get("profile.excel"));
     }
 
     private void loadPhoto(String photoPath) {

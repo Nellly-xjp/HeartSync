@@ -6,32 +6,24 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.Region?>
 
 <HBox spacing="0" styleClass="pane-root"
   xmlns="http://javafx.com/javafx/21"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="com.tyrkanych.controller.MessagesController">
 
-  <!-- Ліва панель — список чатів -->
   <VBox prefWidth="270" spacing="12" styleClass="chat-sidebar">
-
-    <Label styleClass="label-title"
-      style="-fx-padding: 0 16 8 16;" text="Повідомлення"/>
-
-    <TextField fx:id="chatSearch" promptText="🔍  Пошук"
-      style="-fx-margin: 0 16 0 16;"
-      VBox.vgrow="NEVER"/>
-
+    <Label fx:id="labelTitle" styleClass="label-title"
+      style="-fx-padding: 0 16 8 16;"/>
+    <TextField fx:id="chatSearch" VBox.vgrow="NEVER"
+      style="-fx-margin: 0 16 0 16;"/>
     <ListView fx:id="chatList" VBox.vgrow="ALWAYS"/>
   </VBox>
 
-  <!-- Права панель — чат -->
   <VBox HBox.hgrow="ALWAYS" spacing="0">
-
-    <!-- Хедер чату -->
     <HBox alignment="CENTER_LEFT" spacing="14" styleClass="chat-header">
       <StackPane alignment="CENTER" styleClass="avatar-circle">
         <Label fx:id="chatInitial" styleClass="avatar-initial"/>
@@ -42,26 +34,21 @@
       </VBox>
     </HBox>
 
-    <!-- Область повідомлень -->
     <ScrollPane fx:id="chatScrollPane" VBox.vgrow="ALWAYS"
       fitToWidth="true" styleClass="chat-scroll">
       <VBox fx:id="messagesContainer" spacing="8"
         styleClass="chat-messages-container">
-        <Label styleClass="label-muted"
-          text="Виберіть чат щоб почати спілкування ✦"
+        <Label fx:id="labelPlaceholder" styleClass="label-muted"
           style="-fx-padding: 40 0;" maxWidth="Infinity"/>
       </VBox>
     </ScrollPane>
 
-    <!-- Поле вводу -->
     <HBox alignment="CENTER" spacing="10" styleClass="chat-input-area">
       <TextField fx:id="messageInput" HBox.hgrow="ALWAYS"
-        promptText="Написати повідомлення..."
         onAction="#sendMessage"/>
       <Button text="→" styleClass="btn-primary" onAction="#sendMessage"
         style="-fx-font-size: 18px; -fx-min-width: 44; -fx-min-height: 44;
                -fx-background-radius: 50; -fx-cursor: hand;"/>
     </HBox>
-
   </VBox>
 </HBox>

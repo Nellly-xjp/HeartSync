@@ -18,47 +18,53 @@
   fx:controller="com.tyrkanych.controller.MatchesController">
 
   <VBox prefWidth="260" spacing="12">
-    <Label styleClass="label-title" text="Збіги 💘"/>
+    <Label fx:id="labelTitle" styleClass="label-title"/>
     <ListView fx:id="matchesList" VBox.vgrow="ALWAYS"/>
-    <TextField fx:id="searchField" promptText="🔍  Пошук за ім'ям"/>
+    <TextField fx:id="searchField"/>
   </VBox>
 
   <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS"
-    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+    style="-fx-background: transparent; -fx-background-color: transparent;
+           -fx-border-color: transparent;">
     <VBox spacing="16">
-      <Label styleClass="label-title" text="Деталі"/>
+      <Label fx:id="labelDetails" styleClass="label-title"/>
       <VBox spacing="16" styleClass="card">
         <HBox alignment="CENTER_LEFT" spacing="16">
           <StackPane alignment="CENTER"
-            style="-fx-background-color: #C4B4E8; -fx-background-radius: 50; -fx-min-width: 64; -fx-min-height: 64; -fx-max-width: 64; -fx-max-height: 64;">
+            style="-fx-background-color: #C4B4E8; -fx-background-radius: 50;
+                   -fx-min-width: 64; -fx-min-height: 64;
+                   -fx-max-width: 64; -fx-max-height: 64;">
             <ImageView fx:id="detailPhoto" fitWidth="64" fitHeight="64"
               preserveRatio="false" visible="false"/>
             <Label fx:id="detailInitial"
               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
           </StackPane>
           <VBox spacing="4">
-            <Label fx:id="detailName" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Label fx:id="detailName"
+              style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
             <Label fx:id="detailCity" styleClass="label-muted"/>
           </VBox>
         </HBox>
 
         <HBox spacing="12">
-          <Button text="💬  Написати" styleClass="btn-primary" onAction="#openChat"/>
-          <Button text="👤  Профіль" styleClass="btn-secondary" onAction="#viewProfile"/>
-          <Button text="⚠️  Скарга" styleClass="btn-danger" onAction="#reportUser"/>
+          <Button fx:id="btnWrite" styleClass="btn-primary" onAction="#openChat"/>
+          <Button fx:id="btnViewProfile" styleClass="btn-secondary" onAction="#viewProfile"/>
+          <Button fx:id="btnReport" styleClass="btn-danger" onAction="#reportUser"/>
         </HBox>
 
         <Separator/>
 
         <VBox spacing="4">
-          <Label text="ПРО СЕБЕ" styleClass="field-label"/>
-          <Label fx:id="detailBio" styleClass="label-muted" wrapText="true" maxWidth="Infinity"/>
+          <Label fx:id="labelBioSection" styleClass="field-label"/>
+          <Label fx:id="detailBio" styleClass="label-muted"
+            wrapText="true" maxWidth="Infinity"/>
         </VBox>
 
         <VBox spacing="8">
           <HBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Сумісність" styleClass="field-label"/>
-            <Label fx:id="detailScore" style="-fx-font-weight: bold; -fx-text-fill: #7C5CBF;"/>
+            <Label fx:id="labelCompatSection" styleClass="field-label"/>
+            <Label fx:id="detailScore"
+              style="-fx-font-weight: bold; -fx-text-fill: #7C5CBF;"/>
           </HBox>
           <ProgressBar fx:id="compatibilityBar" maxWidth="Infinity" progress="0"/>
         </VBox>

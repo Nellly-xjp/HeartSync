@@ -11,6 +11,7 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -43,6 +44,9 @@ public class DiscoverController {
     @FXML private ComboBox<String> genderFilter;
     @FXML private TextField minAge;
     @FXML private TextField maxAge;
+    @FXML private Label labelTitle;
+    @FXML private Label labelSubtitle;
+    @FXML private Button btnApply;
 
     private int currentIndex = 0;
 
@@ -62,11 +66,10 @@ public class DiscoverController {
         applyLanguage();
         LanguageManager.addListener(this::applyLanguage);
 
-        // завантаження фільтрів
         genderFilter.getItems().addAll(
-                LanguageManager.get("discover.filter.gender").equals("Gender")
-                        ? new String[]{"All", "male", "female", "other"}
-                        : new String[]{"Всі", "male", "female", "other"}
+                "uk".equals(LanguageManager.getCurrentLang())
+                        ? new String[]{"Всі", "male", "female", "other"}
+                        : new String[]{"All", "male", "female", "other"}
         );
         genderFilter.setValue(genderFilter.getItems().get(0));
 
@@ -91,10 +94,26 @@ public class DiscoverController {
     }
 
     private void applyLanguage() {
-        if (minAge != null) minAge.setPromptText(LanguageManager.get("discover.filter.age.from"));
-        if (maxAge != null) maxAge.setPromptText(LanguageManager.get("discover.filter.age.to"));
-        if (genderFilter != null) genderFilter.setPromptText(LanguageManager.get("discover.filter.gender"));
+        if (minAge != null)
+            minAge.setPromptText(LanguageManager.get("discover.filter.age.from"));
+        if (maxAge != null)
+            maxAge.setPromptText(LanguageManager.get("discover.filter.age.to"));
+        if (genderFilter != null)
+            genderFilter.setPromptText(LanguageManager.get("discover.filter.gender"));
+        if (labelTitle != null)
+            labelTitle.setText(LanguageManager.get("discover.title"));
+        if (labelSubtitle != null)
+            labelSubtitle.setText(LanguageManager.get("discover.subtitle"));
+        if (btnApply != null)
+            btnApply.setText(LanguageManager.get("discover.filter.apply"));
+
+        // Оновлюємо текст якщо зараз показується "немає нікого"
+        if (candidates != null && currentIndex >= candidates.size() && cardName != null) {
+            cardName.setText(LanguageManager.get("discover.empty"));
+            if (cardBio != null) cardBio.setText(LanguageManager.get("discover.back"));
+        }
     }
+
     private void loadCandidatesData() {
         Long myId = sessionManager.getCurrentUserId();
         User me = userDao.findById(myId).orElse(null);
@@ -109,7 +128,6 @@ public class DiscoverController {
                 .filter(u -> !likeService.existsLike(myId, u.getId()))
                 .toList();
 
-        // Оновлюємо UI тільки з JavaFX thread
         javafx.application.Platform.runLater(() -> {
             candidates.setAll(all);
             currentIndex = 0;
@@ -123,17 +141,17 @@ public class DiscoverController {
                 loadCandidatesData();
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() ->
-                        cardName.setText("Помилка завантаження"));
+                        cardName.setText(LanguageManager.get("discover.error")));
             }
         }).start();
     }
 
     private void showCurrentCard() {
         if (candidates == null || currentIndex >= candidates.size()) {
-            cardName.setText("Більше нікого немає 😅");
+            cardName.setText(LanguageManager.get("discover.empty"));
             cardAge.setText("");
             cardCity.setText("");
-            cardBio.setText("Поверніться пізніше");
+            cardBio.setText(LanguageManager.get("discover.back"));
             compatibilityBadge.setText("—");
             interest1.setText("");
             interest2.setText("");
@@ -145,7 +163,7 @@ public class DiscoverController {
         }
 
         User u = candidates.get(currentIndex);
-        cardName.setText(u.getName() != null ? u.getName() : "Без імені");
+        cardName.setText(u.getName() != null ? u.getName() : "?");
         cardAge.setText(u.getAge() != null ? u.getAge() + " р." : "");
         cardCity.setText(u.getCity() != null ? "📍 " + u.getCity() : "");
         cardBio.setText(u.getBio() != null ? u.getBio() : "");
@@ -154,8 +172,7 @@ public class DiscoverController {
         interest2.setText("");
         interest3.setText("");
 
-        if (cardPhoto != null && u.getPhotoPath() != null
-                && !u.getPhotoPath().isEmpty()) {
+        if (cardPhoto != null && u.getPhotoPath() != null && !u.getPhotoPath().isEmpty()) {
             File photoFile = new File(u.getPhotoPath());
             if (photoFile.exists()) {
                 cardPhoto.setImage(new Image(photoFile.toURI().toString()));
@@ -192,8 +209,10 @@ public class DiscoverController {
                                 (u.getCity() != null &&
                                         u.getCity().toLowerCase().trim().equals(myCity)))
                         .filter(u -> !likeService.existsLike(myId, u.getId()))
-                        .filter(u -> gender == null || gender.equals("Всі") ||
-                                gender.equals(u.getGender()))
+                        .filter(u -> gender == null
+                                || gender.equals("Всі")
+                                || gender.equals("All")
+                                || gender.equals(u.getGender()))
                         .filter(u -> u.getAge() == null ||
                                 (u.getAge() >= min && u.getAge() <= max))
                         .toList();
@@ -205,7 +224,7 @@ public class DiscoverController {
                 });
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() ->
-                        statusLabel.setText("Помилка фільтрації"));
+                        statusLabel.setText(LanguageManager.get("discover.error")));
             }
         }).start();
     }
@@ -220,14 +239,15 @@ public class DiscoverController {
             boolean mutual = likeService.existsLike(target.getId(), myId);
             if (mutual) {
                 matchService.createMatch(myId, target.getId(), null);
-                statusLabel.setText("🎉 Збіг з " + target.getName() + "!");
+                statusLabel.setText("🎉 " + LanguageManager.get("discover.match")
+                        + " " + target.getName() + "!");
                 statusLabel.setStyle("-fx-text-fill: #C44569; -fx-font-weight: bold;");
             } else {
-                statusLabel.setText("♥ Лайк!");
+                statusLabel.setText("♥ " + LanguageManager.get("discover.like"));
                 statusLabel.setStyle("-fx-text-fill: #7C5CBF;");
             }
         } catch (Exception e) {
-            statusLabel.setText("Вже лайкнуто");
+            statusLabel.setText("❌");
         }
         nextCandidate();
     }
@@ -235,14 +255,14 @@ public class DiscoverController {
     @FXML
     private void handlePass() {
         if (!hasCandidate()) return;
-        statusLabel.setText("Пропущено");
+        statusLabel.setText(LanguageManager.get("discover.pass"));
         nextCandidate();
     }
 
     @FXML
     private void handleSuperLike() {
         if (!hasCandidate()) return;
-        statusLabel.setText("⭐ Супер-лайк!");
+        statusLabel.setText("⭐ " + LanguageManager.get("discover.superlike"));
         nextCandidate();
     }
 

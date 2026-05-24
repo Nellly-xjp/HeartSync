@@ -34,9 +34,10 @@ public class MessagesController {
     @FXML private ScrollPane chatScrollPane;
     @FXML private VBox messagesContainer;
     @FXML private TextField messageInput;
-
+    @FXML private Label labelTitle;
     private Long selectedPartnerId;
     private final List<Long> partnerIds = new ArrayList<>();
+    @FXML private Label labelPlaceholder;
 
     @Autowired
     public MessagesController(MessageService messageService,
@@ -49,6 +50,8 @@ public class MessagesController {
 
     @FXML
     public void initialize() {
+        applyLanguage();
+        LanguageManager.addListener(this::applyLanguage);
         Long myId = sessionManager.getCurrentUserId();
         if (myId == null) return;
 
@@ -79,10 +82,14 @@ public class MessagesController {
         }
     }
     private void applyLanguage() {
+        if (labelTitle != null)
+            labelTitle.setText(LanguageManager.get("messages.title"));
         if (chatSearch != null)
             chatSearch.setPromptText(LanguageManager.get("messages.search"));
         if (messageInput != null)
             messageInput.setPromptText(LanguageManager.get("messages.input"));
+        if (labelPlaceholder != null)
+            labelPlaceholder.setText(LanguageManager.get("messages.placeholder"));
     }
 
     public void loadChatList(Long myId) {

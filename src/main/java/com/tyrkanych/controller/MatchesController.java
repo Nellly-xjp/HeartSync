@@ -7,22 +7,24 @@ import com.tyrkanych.entity.User;
 import com.tyrkanych.service.MatchService;
 import com.tyrkanych.service.ReportService;
 import com.tyrkanych.session.SessionManager;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TextField;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import java.io.File;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 @Component
 public class MatchesController {
 
@@ -40,6 +42,15 @@ public class MatchesController {
     @FXML private ProgressBar compatibilityBar;
     @FXML private Label detailBio;
     @FXML private ImageView detailPhoto;
+
+    @FXML private Label labelTitle;
+    @FXML private Label labelDetails;
+    @FXML private Label labelBioSection;
+    @FXML private Label labelCompatSection;
+    @FXML private Button btnWrite;
+    @FXML private Button btnViewProfile;
+    @FXML private Button btnReport;
+
     private List<Match> matches;
     private Match selectedMatch;
     private Long selectedPartnerId;
@@ -57,6 +68,9 @@ public class MatchesController {
 
     @FXML
     public void initialize() {
+        applyLanguage();
+        LanguageManager.addListener(this::applyLanguage);
+
         loadMatches();
 
         matchesList.getSelectionModel().selectedIndexProperty()
@@ -70,10 +84,26 @@ public class MatchesController {
 
         searchField.textProperty().addListener((obs, old, val) -> filterMatches(val));
     }
+
     private void applyLanguage() {
+        if (labelTitle != null)
+            labelTitle.setText(LanguageManager.get("matches.title"));
+        if (labelDetails != null)
+            labelDetails.setText(LanguageManager.get("matches.details"));
+        if (labelBioSection != null)
+            labelBioSection.setText(LanguageManager.get("matches.bio"));
+        if (labelCompatSection != null)
+            labelCompatSection.setText(LanguageManager.get("matches.compatibility"));
+        if (btnWrite != null)
+            btnWrite.setText("💬  " + LanguageManager.get("matches.write"));
+        if (btnViewProfile != null)
+            btnViewProfile.setText("👤  " + LanguageManager.get("matches.profile"));
+        if (btnReport != null)
+            btnReport.setText("⚠️  " + LanguageManager.get("matches.report"));
         if (searchField != null)
             searchField.setPromptText(LanguageManager.get("messages.search"));
     }
+
     private void loadMatches() {
         Long myId = sessionManager.getCurrentUserId();
         if (myId == null) return;
@@ -87,7 +117,7 @@ public class MatchesController {
             Long partnerId = m.getUser1Id().equals(sessionManager.getCurrentUserId())
                     ? m.getUser2Id() : m.getUser1Id();
             User partner = userDao.findById(partnerId).orElse(null);
-            String name = partner != null ? partner.getName() : "Невідомий";
+            String name = partner != null ? partner.getName() : "?";
             matchesList.getItems().add("💘 " + name);
         }
     }
@@ -123,7 +153,6 @@ public class MatchesController {
         detailCity.setText(partner.getCity() != null ? "📍 " + partner.getCity() : "");
         detailBio.setText(partner.getBio() != null ? partner.getBio() : "");
 
-        // Показуємо фото партнера
         if (detailPhoto != null) {
             if (partner.getPhotoPath() != null && !partner.getPhotoPath().isEmpty()) {
                 File photoFile = new File(partner.getPhotoPath());
@@ -131,6 +160,9 @@ public class MatchesController {
                     detailPhoto.setImage(new Image(photoFile.toURI().toString()));
                     detailPhoto.setVisible(true);
                     detailInitial.setVisible(false);
+                } else {
+                    detailPhoto.setVisible(false);
+                    detailInitial.setVisible(true);
                 }
             } else {
                 detailPhoto.setVisible(false);
@@ -147,19 +179,16 @@ public class MatchesController {
     @FXML
     private void openChat() {
         if (selectedPartnerId == null) return;
-
         try {
-            javafx.scene.layout.StackPane contentArea = (javafx.scene.layout.StackPane)
-                    matchesList.getScene().lookup("#contentArea");
-
+            javafx.scene.layout.StackPane contentArea =
+                    (javafx.scene.layout.StackPane)
+                            matchesList.getScene().lookup("#contentArea");
             if (contentArea != null) {
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/fxml/messages.fxml"));
                 loader.setControllerFactory(SpringFxmlContext::getBean);
                 Node messagesNode = loader.load();
                 contentArea.getChildren().setAll(messagesNode);
-
-                // Передаємо partnerId в MessagesController
                 MessagesController mc = loader.getController();
                 mc.openChatWith(selectedPartnerId);
             }
@@ -171,45 +200,39 @@ public class MatchesController {
     @FXML
     private void viewProfile() {
         if (selectedPartnerId == null) return;
-
         User partner = userDao.findById(selectedPartnerId).orElse(null);
         if (partner == null) return;
-
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Профіль " + partner.getName());
+        alert.setTitle(LanguageManager.get("matches.profile") + " " + partner.getName());
         alert.setHeaderText(partner.getName() + ", " +
                 (partner.getAge() != null ? partner.getAge() + " р." : "") +
                 " • " + (partner.getCity() != null ? partner.getCity() : ""));
-        alert.setContentText(
-                "Email: " + partner.getEmail() + "\n" +
-                        "Про себе: " + (partner.getBio() != null ? partner.getBio() : "—")
-        );
+        alert.setContentText("Email: " + partner.getEmail() + "\n" +
+                LanguageManager.get("matches.bio") + ": " +
+                (partner.getBio() != null ? partner.getBio() : "—"));
         alert.showAndWait();
     }
 
     @FXML
     private void reportUser() {
         if (selectedPartnerId == null) {
-            showAlert("Оберіть збіг спочатку", Alert.AlertType.WARNING);
+            showAlert(LanguageManager.get("matches.report"), Alert.AlertType.WARNING);
             return;
         }
-
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Скарга");
-        dialog.setHeaderText("Поскаржитись на користувача");
-        dialog.setContentText("Причина скарги:");
-
+        dialog.setTitle(LanguageManager.get("matches.report"));
+        dialog.setHeaderText(LanguageManager.get("matches.report"));
+        dialog.setContentText(":");
         dialog.showAndWait().ifPresent(reason -> {
             if (!reason.trim().isEmpty()) {
                 try {
                     reportService.createReport(
                             sessionManager.getCurrentUserId(),
                             selectedPartnerId,
-                            reason.trim()
-                    );
-                    showAlert("✅ Скарга надіслана!", Alert.AlertType.INFORMATION);
+                            reason.trim());
+                    showAlert("✅", Alert.AlertType.INFORMATION);
                 } catch (Exception e) {
-                    showAlert("❌ Помилка: " + e.getMessage(), Alert.AlertType.ERROR);
+                    showAlert("❌ " + e.getMessage(), Alert.AlertType.ERROR);
                 }
             }
         });

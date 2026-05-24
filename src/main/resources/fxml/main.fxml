@@ -57,7 +57,7 @@
     <Button maxWidth="Infinity" onAction="#showProfile" styleClass="nav-item"
       text="👤  Профіль" fx:id="btnProfile"/>
     <Button maxWidth="Infinity" onAction="#showSettings" styleClass="nav-item"
-      text="⚙️Налаштування" fx:id="btnSettings"/>
+      text="⚙Налаштування" fx:id="btnSettings"/>
 
     <Region VBox.vgrow="ALWAYS"/>
 
@@ -65,10 +65,10 @@
 
     <Button style="-fx-padding: 14 20; -fx-alignment: center-left;" maxWidth="Infinity"
       onAction="#handleLogout" styleClass="btn-ghost"
-      text="👤  Вийти з акаунту"/>
+      text="👤  Вийти з акаунту" fx:id="btnLogout"/>
     <Button style="-fx-padding: 14 20; -fx-alignment: center-left; -fx-text-fill: #C44569;"
       maxWidth="Infinity" onAction="#handleExit" styleClass="btn-ghost"
-      text="✕  Вийти з програми"/>
+      text="✕  Вийти з програми" fx:id="btnExit"/>
 
   </VBox>
 

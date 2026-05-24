@@ -37,7 +37,9 @@ public class MainController {
     @FXML private Label sidebarCity;
     @FXML private Label avatarInitial;
     @FXML private ImageView sidebarPhoto;
-
+    @FXML private Button btnLogout;
+    @FXML private Button btnExit;
+    @FXML private Label labelMenu;
     private Button activeButton;
 
     @Autowired
@@ -68,16 +70,13 @@ public class MainController {
     }
 
     private void applyLanguage() {
-        if (btnDiscover != null)
-            btnDiscover.setText("🔍  " + LanguageManager.get("nav.discover"));
-        if (btnMatches != null)
-            btnMatches.setText("💘  " + LanguageManager.get("nav.matches"));
-        if (btnMessages != null)
-            btnMessages.setText("💬  " + LanguageManager.get("nav.messages"));
-        if (btnProfile != null)
-            btnProfile.setText("👤  " + LanguageManager.get("nav.profile"));
-        if (btnSettings != null)
-            btnSettings.setText("⚙️  " + LanguageManager.get("nav.settings"));
+        if (btnDiscover != null) btnDiscover.setText("🔍  " + LanguageManager.get("nav.discover"));
+        if (btnMatches != null) btnMatches.setText("💘  " + LanguageManager.get("nav.matches"));
+        if (btnMessages != null) btnMessages.setText("💬  " + LanguageManager.get("nav.messages"));
+        if (btnProfile != null) btnProfile.setText("👤  " + LanguageManager.get("nav.profile"));
+        if (btnSettings != null) btnSettings.setText("⚙️  " + LanguageManager.get("nav.settings"));
+        if (btnLogout != null) btnLogout.setText("👤  " + LanguageManager.get("nav.logout"));
+        if (btnExit != null) btnExit.setText("✕  " + LanguageManager.get("nav.exit"));
     }
 
     private void loadSidebarPhoto(String photoPath) {

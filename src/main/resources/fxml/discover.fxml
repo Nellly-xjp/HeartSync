@@ -18,14 +18,14 @@
 
   <HBox alignment="CENTER_LEFT" spacing="12">
     <VBox HBox.hgrow="ALWAYS" spacing="2">
-      <Label styleClass="label-title" text="Пошук"/>
-      <Label styleClass="label-muted" text="Люди з твого міста"/>
+      <Label styleClass="label-title" fx:id="labelTitle" text="Пошук"/>
+      <Label styleClass="label-muted" fx:id="labelSubtitle" text="Люди з твого міста"/>
     </VBox>
     <ComboBox fx:id="genderFilter" promptText="Стать" prefWidth="110"/>
     <TextField fx:id="minAge" promptText="Вік від" prefWidth="80"/>
     <TextField fx:id="maxAge" promptText="Вік до" prefWidth="80"/>
     <Button text="Застосувати" styleClass="btn-secondary"
-      onAction="#applyFilters"/>
+      onAction="#applyFilters" fx:id="btnApply"/>
   </HBox>
 
   <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
