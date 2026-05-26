@@ -19,7 +19,10 @@ public class User {
     private String photoPath;
     private String role;
     private Boolean isBanned;
+    private String interests;
 
+    public String getInterests() { return interests; }
+    public void setInterests(String interests) { this.interests = interests; }
     public User() {}
 
     public User(String email, String password, String name, String gender, LocalDate birthDate) {

@@ -137,10 +137,13 @@ public class ProfileController {
             if (file.exists()) {
                 Image image = new Image(file.toURI().toString());
                 profilePhoto.setImage(image);
-                profilePhoto.setVisible(true);
-                profileInitial.setVisible(false);
+                profilePhoto.setFitWidth(120);
+                profilePhoto.setFitHeight(120);
+                profilePhoto.setPreserveRatio(false);
                 Circle clip = new Circle(60, 60, 60);
                 profilePhoto.setClip(clip);
+                profilePhoto.setVisible(true);
+                profileInitial.setVisible(false);
             }
         }
     }
@@ -178,10 +181,13 @@ public class ProfileController {
             sessionManager.getViewModel().setPhotoPath(newPath);
             Image image = new Image(new File(newPath).toURI().toString());
             profilePhoto.setImage(image);
-            profilePhoto.setVisible(true);
-            profileInitial.setVisible(false);
+            profilePhoto.setFitWidth(120);
+            profilePhoto.setFitHeight(120);
+            profilePhoto.setPreserveRatio(false);
             Circle clip = new Circle(60, 60, 60);
             profilePhoto.setClip(clip);
+            profilePhoto.setVisible(true);
+            profileInitial.setVisible(false);
             saveStatus.setText("✅ Фото оновлено!");
             saveStatus.getStyleClass().removeAll("status-error", "status-info");
             saveStatus.getStyleClass().add("status-success");

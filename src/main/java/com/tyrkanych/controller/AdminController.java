@@ -37,7 +37,7 @@ public class AdminController {
     @FXML private Label usersStatus;
     @FXML private Label bannedStatus;
     @FXML private Label adminThemeStatus;
-
+    @FXML private Button btnExcelReport;
     @FXML private ListView<String> reportsList;
     @FXML private ListView<String> usersList;
     @FXML private ListView<String> bannedList;
@@ -54,7 +54,8 @@ public class AdminController {
     @FXML private Button btnUsers;
     @FXML private Button btnBanned;
     @FXML private Button btnStats;
-    @FXML private Button btnSettings;@FXML private Label labelPanel;
+    @FXML private Button btnSettings;
+    @FXML private Label labelPanel;
     @FXML private Button btnLogout;
     @FXML private Button btnExit;
     @FXML private Label labelReportDetail;
@@ -87,8 +88,6 @@ public class AdminController {
             Scene scene = reportsList.getScene();
             if (scene != null) ThemeManager.setMainScene(scene);
         });
-
-        // Реєструємо слухач мови
         LanguageManager.addListener(this::applyLanguage);
         applyLanguage();
         showReports();
@@ -105,8 +104,8 @@ public class AdminController {
             Platform.runLater(() -> {
                 reportsList.getItems().clear();
                 for (Report r : reports) {
-                    reportsList.getItems().add(
-                            "⚠ ID:" + r.getReportedUserId() + " — " + r.getReason());
+                    String targetInfo = adminService.getUserInfo(r.getReportedUserId());
+                    reportsList.getItems().add("⚠ " + targetInfo + " — " + r.getReason());
                 }
             });
         }).start();
@@ -116,13 +115,14 @@ public class AdminController {
                     int i = idx.intValue();
                     if (i >= 0 && reports != null && i < reports.size()) {
                         Report r = reports.get(i);
-                        reportReporter.setText("Від: ID " + r.getFromUserId());
-                        reportTarget.setText("На: ID " + r.getReportedUserId());
+                        String reporterInfo = adminService.getUserInfo(r.getFromUserId());
+                        String targetInfo = adminService.getUserInfo(r.getReportedUserId());
+                        reportReporter.setText("Від: " + reporterInfo);
+                        reportTarget.setText("На: " + targetInfo);
                         reportReason.setText("Причина: " + r.getReason());
                     }
                 });
     }
-
     @FXML
     private void showUsers() {
         setActive(btnUsers);
@@ -135,37 +135,12 @@ public class AdminController {
                 usersList.getItems().clear();
                 for (User u : users) {
                     String status = Boolean.TRUE.equals(u.getIsBanned()) ? " 🚫" : "";
-                    usersList.getItems().add(
-                            u.getName() + " | " + u.getEmail() + status);
+                    usersList.getItems().add(u.getName() + " | " + u.getEmail() + status);
                 }
             });
         }).start();
     }
 
-
-    private void applyLanguage() {
-        if (btnReports != null) btnReports.setText("⚠  " + LanguageManager.get("nav.reports"));
-        if (btnUsers != null) btnUsers.setText("👥  " + LanguageManager.get("nav.users"));
-        if (btnBanned != null) btnBanned.setText("🚫  " + LanguageManager.get("nav.banned"));
-        if (btnStats != null) btnStats.setText("📊  " + LanguageManager.get("nav.stats"));
-        if (btnSettings != null) btnSettings.setText("⚙  " + LanguageManager.get("admin.settings"));
-        if (btnLogout != null) btnLogout.setText("👤  " + LanguageManager.get("nav.logout"));
-        if (btnExit != null) btnExit.setText("✕  " + LanguageManager.get("nav.exit"));
-        if (labelPanel != null) labelPanel.setText(LanguageManager.get("admin.panel"));
-        if (labelReportDetail != null) labelReportDetail.setText(LanguageManager.get("admin.reports.detail"));
-        if (btnBan != null) btnBan.setText("🚫  " + LanguageManager.get("admin.ban"));
-        if (btnDismiss != null) btnDismiss.setText("✓  " + LanguageManager.get("admin.dismiss"));
-        if (btnBanUser != null) btnBanUser.setText("🚫  " + LanguageManager.get("admin.ban"));
-        if (btnUnban != null) btnUnban.setText("✓  " + LanguageManager.get("admin.unban"));
-        if (labelStatUsers != null) labelStatUsers.setText(LanguageManager.get("nav.users"));
-        if (labelStatReports != null) labelStatReports.setText(LanguageManager.get("nav.reports"));
-        if (labelStatBanned != null) labelStatBanned.setText(LanguageManager.get("nav.banned"));
-        if (labelThemeTitle != null) labelThemeTitle.setText(LanguageManager.get("admin.theme"));
-        if (labelLangTitle != null) labelLangTitle.setText(LanguageManager.get("admin.language"));
-        if (btnLightTheme != null) btnLightTheme.setText(LanguageManager.get("settings.theme.light"));
-        if (btnDarkTheme != null) btnDarkTheme.setText(LanguageManager.get("settings.theme.dark"));
-        updateThemeStatus();
-    }
     @FXML
     private void showBanned() {
         setActive(btnBanned);
@@ -177,8 +152,7 @@ public class AdminController {
             Platform.runLater(() -> {
                 bannedList.getItems().clear();
                 for (User u : banned) {
-                    bannedList.getItems().add(
-                            "🚫 " + u.getName() + " | " + u.getEmail());
+                    bannedList.getItems().add("🚫 " + u.getName() + " | " + u.getEmail());
                 }
             });
         }).start();
@@ -214,14 +188,14 @@ public class AdminController {
     private void banSelected() {
         int idx = reportsList.getSelectionModel().getSelectedIndex();
         if (idx < 0 || reports == null || idx >= reports.size()) {
-            adminStatus.setText("Оберіть скаргу спочатку");
+            adminStatus.setText(LanguageManager.get("admin.ban") + " — оберіть скаргу");
             return;
         }
         Long targetId = reports.get(idx).getReportedUserId();
         new Thread(() -> {
             adminService.banUser(targetId);
             Platform.runLater(() -> {
-                adminStatus.setText("✅ Користувача забанено");
+                adminStatus.setText("✅ " + LanguageManager.get("admin.ban"));
                 showReports();
             });
         }).start();
@@ -229,7 +203,7 @@ public class AdminController {
 
     @FXML
     private void dismissReport() {
-        adminStatus.setText("✓ Скаргу відхилено");
+        adminStatus.setText("✓ " + LanguageManager.get("admin.dismiss"));
     }
 
     @FXML
@@ -243,7 +217,7 @@ public class AdminController {
         new Thread(() -> {
             adminService.banUser(targetId);
             Platform.runLater(() -> {
-                usersStatus.setText("✅ Забанено");
+                usersStatus.setText("✅ " + LanguageManager.get("admin.ban"));
                 showUsers();
             });
         }).start();
@@ -260,7 +234,7 @@ public class AdminController {
         new Thread(() -> {
             adminService.unbanUser(targetId);
             Platform.runLater(() -> {
-                bannedStatus.setText("✅ Розбанено");
+                bannedStatus.setText("✅ " + LanguageManager.get("admin.unban"));
                 showBanned();
             });
         }).start();
@@ -297,14 +271,42 @@ public class AdminController {
         loader.setControllerFactory(SpringFxmlContext::getBean);
         Parent root = loader.load();
         Scene loginScene = new Scene(root, 900, 650);
-        ThemeManager.registerScene(loginScene); // ← реєструємо нову сцену з поточною темою
+        ThemeManager.registerScene(loginScene);
         stage.setScene(loginScene);
         stage.setTitle("HeartSync — Вхід");
     }
+
     @FXML
     private void handleExit() {
         Platform.exit();
         System.exit(0);
+    }
+
+    private void applyLanguage() {
+        if (btnReports != null) btnReports.setText("⚠  " + LanguageManager.get("nav.reports"));
+        if (btnUsers != null) btnUsers.setText("👥  " + LanguageManager.get("nav.users"));
+        if (btnBanned != null) btnBanned.setText("🚫  " + LanguageManager.get("nav.banned"));
+        if (btnStats != null) btnStats.setText("📊  " + LanguageManager.get("nav.stats"));
+        if (btnSettings != null) btnSettings.setText("⚙  " + LanguageManager.get("admin.settings"));
+        if (btnLogout != null) btnLogout.setText("👤  " + LanguageManager.get("nav.logout"));
+        if (btnExit != null) btnExit.setText("✕  " + LanguageManager.get("nav.exit"));
+        if (labelPanel != null) labelPanel.setText(LanguageManager.get("admin.panel"));
+        if (labelReportDetail != null) labelReportDetail.setText(LanguageManager.get("admin.reports.detail"));
+        if (btnBan != null) btnBan.setText("🚫  " + LanguageManager.get("admin.ban"));
+        if (btnDismiss != null) btnDismiss.setText("✓  " + LanguageManager.get("admin.dismiss"));
+        if (btnBanUser != null) btnBanUser.setText("🚫  " + LanguageManager.get("admin.ban"));
+        if (btnUnban != null) btnUnban.setText("✓  " + LanguageManager.get("admin.unban"));
+        if (labelStatUsers != null) labelStatUsers.setText(LanguageManager.get("nav.users"));
+        if (labelStatReports != null) labelStatReports.setText(LanguageManager.get("nav.reports"));
+        if (labelStatBanned != null) labelStatBanned.setText(LanguageManager.get("nav.banned"));
+        if (labelThemeTitle != null) labelThemeTitle.setText(LanguageManager.get("admin.theme"));
+        if (labelLangTitle != null) labelLangTitle.setText(LanguageManager.get("admin.language"));
+        if (btnLightTheme != null) btnLightTheme.setText(LanguageManager.get("settings.theme.light"));
+        if (btnDarkTheme != null) btnDarkTheme.setText(LanguageManager.get("settings.theme.dark"));
+        if (btnExcelReport != null)
+            btnExcelReport.setText(LanguageManager.get("profile.excel"));
+
+        updateThemeStatus();
     }
 
     private void updateThemeStatus() {
@@ -325,7 +327,31 @@ public class AdminController {
         pane.setVisible(true);
         pane.setManaged(true);
     }
+    @FXML
+    private void exportToExcel() {
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("Зберегти Excel звіт");
+        fileChooser.setInitialFileName("heartsync_admin_report.xlsx");
+        fileChooser.getExtensionFilters().add(
+                new javafx.stage.FileChooser.ExtensionFilter("Excel файли", "*.xlsx"));
 
+        Stage stage = (Stage) reportsList.getScene().getWindow();
+        java.io.File file = fileChooser.showSaveDialog(stage);
+        if (file == null) return;
+
+        new Thread(() -> {
+            try {
+                List<User> allUsers = adminService.getAllUsers();
+                List<Report> allReports = adminService.getAllReports();
+                adminService.exportToExcel(allUsers, allReports, file.getAbsolutePath());
+                Platform.runLater(() ->
+                        contentTitle.setText("✅ Excel збережено: " + file.getName()));
+            } catch (Exception e) {
+                Platform.runLater(() ->
+                        contentTitle.setText("❌ Помилка: " + e.getMessage()));
+            }
+        }).start();
+    }
     private void setActive(Button btn) {
         if (activeBtn != null) activeBtn.getStyleClass().remove("nav-item-active");
         btn.getStyleClass().add("nav-item-active");

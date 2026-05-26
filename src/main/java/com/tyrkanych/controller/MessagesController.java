@@ -6,6 +6,7 @@ import com.tyrkanych.entity.Message;
 import com.tyrkanych.entity.User;
 import com.tyrkanych.service.MessageService;
 import com.tyrkanych.session.SessionManager;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.fxml.FXML;
@@ -14,8 +15,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +39,11 @@ public class MessagesController {
     @FXML private VBox messagesContainer;
     @FXML private TextField messageInput;
     @FXML private Label labelTitle;
+    @FXML private Label labelPlaceholder;
+    @FXML private ImageView chatPartnerPhoto;
+
     private Long selectedPartnerId;
     private final List<Long> partnerIds = new ArrayList<>();
-    @FXML private Label labelPlaceholder;
 
     @Autowired
     public MessagesController(MessageService messageService,
@@ -52,6 +58,7 @@ public class MessagesController {
     public void initialize() {
         applyLanguage();
         LanguageManager.addListener(this::applyLanguage);
+
         Long myId = sessionManager.getCurrentUserId();
         if (myId == null) return;
 
@@ -64,23 +71,18 @@ public class MessagesController {
                         selectedPartnerId = partnerIds.get(idx);
                         User partner = userDao.findById(selectedPartnerId).orElse(null);
                         if (partner != null) {
-                            chatPartnerName.setText(partner.getName());
-                            chatInitial.setText(partner.getName() != null
-                                    && !partner.getName().isEmpty()
-                                    ? String.valueOf(partner.getName().charAt(0)).toUpperCase()
-                                    : "?");
-                            chatPartnerStatus.setText("онлайн");
+                            updatePartnerHeader(partner);
                         }
                         loadConversation(selectedPartnerId);
                     }
                 });
 
         if (chatSearch != null) {
-            chatSearch.textProperty().addListener((obs, old, val) -> {
-                filterChats(myId, val);
-            });
+            chatSearch.textProperty().addListener((obs, old, val) ->
+                    filterChats(myId, val));
         }
     }
+
     private void applyLanguage() {
         if (labelTitle != null)
             labelTitle.setText(LanguageManager.get("messages.title"));
@@ -90,6 +92,33 @@ public class MessagesController {
             messageInput.setPromptText(LanguageManager.get("messages.input"));
         if (labelPlaceholder != null)
             labelPlaceholder.setText(LanguageManager.get("messages.placeholder"));
+    }
+
+    private void updatePartnerHeader(User partner) {
+        chatPartnerName.setText(partner.getName() != null ? partner.getName() : "?");
+        chatPartnerStatus.setText("онлайн");
+
+        // Фото партнера
+        if (partner.getPhotoPath() != null && !partner.getPhotoPath().isEmpty()) {
+            File photoFile = new File(partner.getPhotoPath());
+            if (photoFile.exists() && chatPartnerPhoto != null) {
+                Image img = new Image(photoFile.toURI().toString());
+                chatPartnerPhoto.setImage(img);
+                chatPartnerPhoto.setFitWidth(42);
+                chatPartnerPhoto.setFitHeight(42);
+                chatPartnerPhoto.setPreserveRatio(false);
+                Circle clip = new Circle(21, 21, 21);
+                chatPartnerPhoto.setClip(clip);
+                chatPartnerPhoto.setVisible(true);
+                chatInitial.setVisible(false);
+                return;
+            }
+        }
+        // Якщо фото немає — показуємо літеру
+        if (chatPartnerPhoto != null) chatPartnerPhoto.setVisible(false);
+        chatInitial.setVisible(true);
+        chatInitial.setText(partner.getName() != null && !partner.getName().isEmpty()
+                ? String.valueOf(partner.getName().charAt(0)).toUpperCase() : "?");
     }
 
     public void loadChatList(Long myId) {
@@ -105,9 +134,7 @@ public class MessagesController {
                     User p = userDao.findById(pid).orElse(null);
                     if (p != null) {
                         partnerIds.add(pid);
-                        chatList.getItems().add(
-                                p.getName() != null ? p.getName() : "?"
-                        );
+                        chatList.getItems().add(p.getName() != null ? p.getName() : "?");
                     }
                 });
     }
@@ -116,10 +143,7 @@ public class MessagesController {
         selectedPartnerId = partnerId;
         User partner = userDao.findById(partnerId).orElse(null);
         if (partner != null) {
-            chatPartnerName.setText(partner.getName());
-            chatInitial.setText(partner.getName() != null && !partner.getName().isEmpty()
-                    ? String.valueOf(partner.getName().charAt(0)).toUpperCase() : "?");
-            chatPartnerStatus.setText("онлайн");
+            updatePartnerHeader(partner);
         }
         loadConversation(partnerId);
 

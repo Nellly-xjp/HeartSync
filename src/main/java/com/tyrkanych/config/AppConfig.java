@@ -63,6 +63,11 @@ public class AppConfig {
         ds.setUrl(dbUrl);
         ds.setUsername(dbUsername);
         ds.setPassword(dbPassword);
+
+        Properties props = new Properties();
+        props.setProperty("sslMode", "DISABLED");
+        ds.setConnectionProperties(props);
+
         return ds;
     }
 

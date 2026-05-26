@@ -84,11 +84,6 @@
         <Button fx:id="btnReset" styleClass="btn-secondary" onAction="#resetProfile"/>
       </HBox>
 
-      <HBox spacing="12">
-        <Button fx:id="btnPdf" styleClass="btn-secondary" onAction="#exportToPdf"/>
-        <Button fx:id="btnExcel" styleClass="btn-secondary" onAction="#exportToExcel"/>
-      </HBox>
-
       <Label fx:id="saveStatus" wrapText="true"/>
     </VBox>
   </VBox>

@@ -57,6 +57,7 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
         user.setPhotoPath(rs.getString("photo_path"));
         try { user.setRole(rs.getString("role")); } catch (SQLException ignored) {}
         try { user.setIsBanned(rs.getBoolean("is_banned")); } catch (SQLException ignored) {}
+        try { user.setInterests(rs.getString("interests")); } catch (SQLException ignored) {}
         return user;
     }
 
@@ -75,6 +76,10 @@ public class UserDaoImpl extends BaseJdbcDao<User, Long> implements UserDao {
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         return findBy(sql, email);
+    }
+    public void updateInterests(Long userId, String interests) {
+        String sql = "UPDATE users SET interests = ? WHERE id = ?";
+        executeUpdate(sql, interests, userId);
     }
 
     @Override

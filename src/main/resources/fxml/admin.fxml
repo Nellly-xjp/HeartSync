@@ -112,6 +112,8 @@
           <Label fx:id="labelStatBanned" text="Забанених" styleClass="label-muted"/>
         </VBox>
       </HBox>
+      <Button fx:id="btnExcelReport" styleClass="btn-secondary"
+        onAction="#exportToExcel" text="Excel звіт"/>
     </VBox>
 
     <!-- Налаштування -->

@@ -188,6 +188,16 @@ public class DiscoverController {
             profileEmoji.setVisible(true);
             profileEmoji.setText(getInitial(u.getName()));
         }
+        if (u.getInterests() != null && !u.getInterests().isEmpty()) {
+            String[] parts = u.getInterests().split(", ");
+            interest1.setText(parts.length > 0 ? parts[0] : "");
+            interest2.setText(parts.length > 1 ? parts[1] : "");
+            interest3.setText(parts.length > 2 ? parts[2] : "");
+        } else {
+            interest1.setText("");
+            interest2.setText("");
+            interest3.setText("");
+        }
     }
 
     @FXML

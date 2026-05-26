@@ -85,9 +85,12 @@ public class MainController {
             if (file.exists()) {
                 Image image = new Image(file.toURI().toString());
                 sidebarPhoto.setImage(image);
-                sidebarPhoto.setVisible(true);
+                sidebarPhoto.setFitWidth(44);
+                sidebarPhoto.setFitHeight(44);
+                sidebarPhoto.setPreserveRatio(false);
                 Circle clip = new Circle(22, 22, 22);
                 sidebarPhoto.setClip(clip);
+                sidebarPhoto.setVisible(true);
                 avatarInitial.setVisible(false);
                 return;
             }

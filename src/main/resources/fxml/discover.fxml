@@ -46,7 +46,7 @@
       <VBox spacing="4" alignment="CENTER"
         style="-fx-padding: 16 20 0 20;">
         <Label fx:id="compatibilityBadge" styleClass="badge"
-          style="-fx-padding: 4 14;">
+          style="-fx-padding: 4 14;" visible="false" managed="false">
           <VBox.margin><Insets bottom="8"/></VBox.margin>
         </Label>
         <Label fx:id="cardName" styleClass="match-card-name"
@@ -76,11 +76,6 @@
           prefWidth="56" prefHeight="56"
           style="-fx-font-size: 20px; -fx-background-radius: 50;"
           onAction="#handlePass"/>
-        <Button text="★" prefWidth="48" prefHeight="48"
-          style="-fx-font-size: 16px; -fx-background-radius: 50;
-                 -fx-background-color: #F5A623; -fx-text-fill: white;
-                 -fx-cursor: hand;"
-          onAction="#handleSuperLike"/>
         <Button text="♥" styleClass="btn-primary"
           prefWidth="56" prefHeight="56"
           style="-fx-font-size: 20px; -fx-background-radius: 50;"

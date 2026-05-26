@@ -2,6 +2,7 @@ package com.tyrkanych.controller;
 
 import com.tyrkanych.config.LanguageManager;
 import com.tyrkanych.config.ThemeManager;
+import com.tyrkanych.dao.impl.UserDaoImpl;
 import com.tyrkanych.dto.UserDto;
 import com.tyrkanych.dto.UserRegistrationDto;
 import com.tyrkanych.service.UserService;
@@ -88,14 +89,16 @@ public class RegistrationController {
 
     private String verifiedEmail;
     private String verifiedPassword;
-
+    private final UserDaoImpl userDao;
     @Autowired
     public RegistrationController(UserService userService,
             VerificationService verificationService,
-            SessionManager sessionManager) {
+            SessionManager sessionManager,
+            UserDaoImpl userDao) { // ← додай параметр
         this.userService = userService;
         this.verificationService = verificationService;
         this.sessionManager = sessionManager;
+        this.userDao = userDao; // ← додай
     }
 
     @FXML
@@ -270,8 +273,14 @@ public class RegistrationController {
             dto.setBirthDate(birthDatePicker.getValue());
             dto.setCity(city);
             dto.setBio(bioArea.getText().trim());
+            dto.setInterests(selectedInterests); // ← додано
 
             UserDto created = userService.register(dto);
+
+            // Зберігаємо інтереси в БД
+            String interestsStr = String.join(", ", selectedInterests);
+            userDao.updateInterests(created.getId(), interestsStr); // ← додано
+
             sessionManager.login(created);
 
             Stage stage = (Stage) nameField.getScene().getWindow();

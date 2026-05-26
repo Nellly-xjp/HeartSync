@@ -94,6 +94,7 @@ public class LoginController {
                 openMainWindow();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             setStatus("❌ Помилка входу: " + e.getMessage(), "status-error");
         }
     }
